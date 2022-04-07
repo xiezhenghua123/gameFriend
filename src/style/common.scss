@@ -1,0 +1,54 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: ZhenghuaXie
+ * @Date: 2022-04-02 20:59:08
+ * @LastEditors: ZhenghuaXie
+ * @LastEditTime: 2022-04-04 21:05:13
+ */
+body {
+  font-size: $uni-font-size-base;
+  color: $uni-text-color;
+  // background-color: $uni-bg-color-grey;
+}
+.ml-10 {
+  margin-left: 10px;
+}
+.mt-10 {
+  margin-top: 10px;
+}
+.mb-10 {
+  margin-bottom: 10px;
+}
+.mr-10 {
+  margin-right: 10px;
+}
+.m-10 {
+  margin: 10px;
+}
+.p-10 {
+  padding: 10px;
+}
+.pl-10 {
+  padding-left: 10px;
+}
+.pr-10 {
+  padding-right: 10px;
+}
+.pt-10 {
+  padding-top: 10px;
+}
+.pb-10 {
+  padding-bottom: 10px;
+}
+.button-bottom {
+  position: fixed;
+  bottom: 30rpx;
+  width: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.flex {
+  display: flex;
+  align-items: center;
+}

@@ -1,16 +1,122 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
-		}
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	}
+  "pages": [
+    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "比赛"
+      }
+    },
+    {
+      "path": "pages/message/index",
+      "style": {
+        "navigationBarTitleText": "聊天",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/teammate/index",
+      "style": {
+        "navigationBarTitleText": "队友"
+      }
+    },
+    {
+      "path": "pages/suggestion/index",
+      "style": {
+        "navigationBarTitleText": "意见与反馈"
+      }
+    },
+    {
+      "path": "pages/my-favorite/index",
+      "style": {
+        "navigationBarTitleText": "我的收藏"
+      }
+    },
+    {
+      "path": "pages/my-release/index",
+      "style": {
+        "navigationBarTitleText": "我的发布"
+      }
+    },
+    {
+      "path": "pages/concern-game/index",
+      "style": {
+        "navigationBarTitleText": "关注的比赛"
+      }
+    },
+    {
+      "path": "pages/my-information/index",
+      "style": {
+        "navigationBarTitleText": "我的资料"
+      }
+    },
+    {
+      "path": "pages/game-details/index",
+      "style": {
+        "navigationBarTitleText": "帖子详情"
+      }
+    },
+    {
+      "path": "pages/chat/groupChat/groupChat",
+      "style": {
+        "navigationBarTitleText": "群聊",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/chat/privateChat/privateChat",
+      "style": {
+        "navigationBarTitleText": "私聊",
+        "enablePullDownRefresh": true
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#515151",
+    "selectedColor": "#1afa29",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabbar/index.png",
+        "selectedIconPath": "static/tabbar/index-on.png",
+        "text": "比赛"
+      },
+      {
+        "pagePath": "pages/teammate/index",
+        "iconPath": "static/tabbar/teammate.png",
+        "selectedIconPath": "static/tabbar/teammate-on.png",
+        "text": "找队友"
+      },
+      {
+        "pagePath": "pages/message/index",
+        "iconPath": "static/tabbar/message.png",
+        "selectedIconPath": "static/tabbar/message-on.png",
+        "text": "聊天"
+      },
+      {
+        "pagePath": "pages/home/index",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home-on.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "rpxCalcBaseDeviceWidth": 750
+  },
+  "easycom": {
+    "^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+  }
 }

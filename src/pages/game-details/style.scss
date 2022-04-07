@@ -1,0 +1,54 @@
+.top-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .person {
+    display: flex;
+    align-items: center;
+  }
+  .operation-box {
+    display: flex;
+    align-items: center;
+  }
+}
+.content-box {
+  .game {
+    &-img {
+      width: 100%;
+      height: 120px;
+    }
+    &-title {
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+  }
+  .details {
+    .time {
+      text-align: right;
+    }
+  }
+}
+.comment-box {
+  .title {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    background-color: rgba(66, 61, 61, 0.3);
+  }
+  .answer {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    ::v-deep .u-input {
+      background-color: #fff;
+    }
+    &-btn {
+      width: 15%;
+    }
+  }
+}

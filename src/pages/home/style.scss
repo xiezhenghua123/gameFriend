@@ -1,0 +1,54 @@
+.top {
+  display: flex;
+  padding: 15px 20px 15px 20px;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $uni-bg-color-hover;
+  .message {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .m_right {
+      margin-left: 10rpx;
+    }
+    .message_name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10rpx;
+    }
+  }
+}
+::v-deep .divider .u-divider {
+  margin: 0;
+}
+.content {
+  &_every {
+    &:active {
+      background-color: $uni-bg-color-hover;
+    }
+  }
+  .feature {
+    display: flex;
+    // height: 80rpx;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 40rpx;
+    padding: 10px 0;
+    .left {
+      display: flex;
+      align-items: center;
+    }
+    &_logo {
+      margin-right: 15rpx;
+    }
+    &_name {
+      font-size: $uni-font-size-lg;
+      // font-weight: bold;
+    }
+  }
+  ::v-deep .line {
+    .u-line {
+      margin: 0 !important;
+    }
+  }
+}
