@@ -99,7 +99,14 @@
         </view>
         <view class="file-icon emoji-icon" @click="showEmoji"></view>
         <view class="file-icon more-icon" @click="showMore"></view>
-        <span class="send-message-btn" @click="sendTextMessage">发送</span>
+        <view class="button mr-10">
+          <u-button
+            type="primary"
+            class="send-message-btn"
+            text="发送"
+            @click="sendTextMessage"
+          ></u-button>
+        </view>
       </view>
       <view class="action-bottom" v-if="emoji.show">
         <image
@@ -441,7 +448,9 @@ export default {
     showMembers() {
       //显示群成员
       uni.navigateTo({
-        url: '../groupChat/member?users=' + JSON.stringify(this.groupMembers),
+        url:
+          '/pages/chat/groupChat/member?users=' +
+          JSON.stringify(this.groupMembers),
       })
     },
     onRecordStart() {
@@ -541,4 +550,6 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+@import '../style.scss';
+</style>

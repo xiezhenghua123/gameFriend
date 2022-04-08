@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-05 19:28:12
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-05 22:31:11
+ * @LastEditTime: 2022-04-08 11:26:27
  */
 //用户数据示例
 let users = [
@@ -35,7 +35,38 @@ let users = [
 ]
 
 //群数据示例
-let groups = []
+let groups = [
+  {
+    uuid: 'group-a42b-47b2-bb1e-15e0f5f9a19a',
+    name: '小程序交流群',
+    avatar: '/static/images/wx.png',
+    userList: [
+      '08c0a6ec-a42b-47b2-bb1e-15e0f5f9a19a',
+      '3bb179af-bcc5-4fe0-9dac-c05688484649',
+      'fdee46b0-4b01-4590-bdba-6586d7617f95',
+      '33c3693b-dbb0-4bc9-99c6-fa77b9eb763f',
+    ],
+  },
+  {
+    uuid: 'group-4b01-4590-bdba-6586d7617f95',
+    name: 'UniApp交流群',
+    avatar: '/static/images/uniapp.png',
+    userList: [
+      '08c0a6ec-a42b-47b2-bb1e-15e0f5f9a19a',
+      'fdee46b0-4b01-4590-bdba-6586d7617f95',
+      '33c3693b-dbb0-4bc9-99c6-fa77b9eb763f',
+    ],
+  },
+  {
+    uuid: 'group-dbb0-4bc9-99c6-fa77b9eb763f',
+    name: 'GoEasy交流群',
+    avatar: '/static/images/goeasy.jpeg',
+    userList: [
+      '08c0a6ec-a42b-47b2-bb1e-15e0f5f9a19a',
+      '3bb179af-bcc5-4fe0-9dac-c05688484649',
+    ],
+  },
+]
 
 function RestApi() {}
 

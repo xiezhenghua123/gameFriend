@@ -75,6 +75,31 @@
         "navigationBarTitleText": "私聊",
         "enablePullDownRefresh": true
       }
+    },
+    {
+      "path": "pages/chat/groupChat/member",
+      "style": {
+        "navigationBarTitleText": "查看群成员",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/chat/createNewGroup/index",
+      "style": {
+        "navigationBarTitleText": "创建群聊"
+      }
+    },
+    {
+      "path": "pages/chat/findNewPerson/index",
+      "style": {
+        "navigationBarTitleText": "搜索用户"
+      }
+    },
+    {
+      "path": "pages/chat/groupAddPerson/index",
+      "style": {
+        "navigationBarTitleText": "邀请新成员"
+      }
     }
   ],
   "tabBar": {

@@ -101,7 +101,14 @@
         </view>
         <view class="file-icon emoji-icon" @click="showEmoji"></view>
         <view class="file-icon more-icon" @click="showMore"></view>
-        <span class="send-message-btn" @click="sendTextMessage">发送</span>
+        <view class="button mr-10">
+          <u-button
+            type="primary"
+            class="send-message-btn"
+            text="发送"
+            @click="sendTextMessage"
+          ></u-button>
+        </view>
       </view>
       <!--展示表情列表-->
       <view
@@ -541,4 +548,6 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+@import '../style.scss';
+</style>

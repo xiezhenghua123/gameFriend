@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:38
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-04 20:16:50
+ * @LastEditTime: 2022-04-08 15:13:55
 -->
 <template>
   <view class="m-10">
@@ -26,7 +26,7 @@
             <u-avatar :src="item.imageUrl" size="55"></u-avatar>
             <view class="name">{{ item.name }}</view>
           </view>
-          <view class="check"> 查看</view>
+          <view class="check" @click="toPersonDetail"> 查看</view>
         </view>
       </view>
     </view>
@@ -102,6 +102,11 @@ export default {
   },
   onLoad() {},
   methods: {
+    toPersonDetail() {
+      uni.navigateTo({
+        url: '/pages/my-information/index?type=other',
+      })
+    },
     clickToDetails() {
       uni.navigateTo({
         url: '/pages/game-details/index',

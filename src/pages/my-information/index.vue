@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 15:28:59
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-04 21:09:44
+ * @LastEditTime: 2022-04-08 16:49:40
 -->
 
 <template>
@@ -20,6 +20,7 @@
               placeholder="个性签名"
               border="none"
               fontSize="12"
+              :disabled="otherPerson"
             ></u-input>
           </view>
         </view>
@@ -32,6 +33,7 @@
             placeholder="未填写"
             border="none"
             v-model="initData.formData.username"
+            :disabled="otherPerson"
           ></u-input>
         </u-form-item>
         <u-form-item prop="sex" label="性别：" borderBottom>
@@ -39,12 +41,14 @@
             placeholder="未填写"
             border="none"
             v-model="initData.formData.sex"
+            :disabled="otherPerson"
           ></u-input>
         </u-form-item>
         <u-form-item prop="age" label="年龄：" borderBottom>
           <u-input
             placeholder="未填写"
             border="none"
+            :disabled="otherPerson"
             v-model="initData.formData.age"
           ></u-input>
         </u-form-item>
@@ -52,6 +56,7 @@
           <u-input
             placeholder="未填写"
             border="none"
+            :disabled="otherPerson"
             v-model="initData.formData.grade"
           ></u-input>
         </u-form-item>
@@ -61,6 +66,7 @@
             placeholder="未填写"
             border="none"
             v-model="initData.formData.major"
+            :disabled="otherPerson"
           ></u-input>
         </u-form-item>
         <u-form-item prop="school" label="学校：" borderBottom>
@@ -68,6 +74,7 @@
             placeholder="未填写"
             border="none"
             v-model="initData.formData.school"
+            :disabled="otherPerson"
           ></u-input>
         </u-form-item>
         <u-form-item prop="well" label="擅长：" borderBottom>
@@ -75,12 +82,14 @@
             placeholder="未填写"
             border="none"
             v-model="initData.formData.well"
+            :disabled="otherPerson"
           ></u-input>
         </u-form-item>
         <view class="details-box">
           <u-form-item prop="details" label="简介：">
             <u--textarea
               v-model="initData.formData.details"
+              :disabled="otherPerson"
               count
               maxlength="1000"
             ></u--textarea>
@@ -88,8 +97,11 @@
         </view>
       </u-form>
     </view>
-    <view class="bottom p-10">
+    <view class="bottom p-10" v-if="!otherPerson">
       <u-button text="保存修改" type="primary" size="large"></u-button>
+    </view>
+    <view class="bottom p-10" v-else>
+      <u-button text="发送好友申请" type="primary" size="large"></u-button>
     </view>
   </view>
 </template>
@@ -98,6 +110,7 @@
 export default {
   data() {
     return {
+      otherPerson: false,
       initData: {
         imgUrl: require('static/logo.png'),
         username: '爸爸',
@@ -115,7 +128,15 @@ export default {
       },
     }
   },
-  onLoad() {},
+  onLoad(options) {
+    if (options.type === 'other') {
+      this.otherPerson = true
+      uni.setNavigationBarTitle({
+        title: 'xxx',
+      })
+    }
+  },
+
   methods: {},
 }
 </script>

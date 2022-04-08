@@ -1,6 +1,7 @@
 <template>
   <div class="contacts">
     <div class="contacts-container">
+      <view class="contacts-title">群组</view>
       <div class="user-list">
         <div
           class="user-list-item"
@@ -15,6 +16,14 @@
             <span class="user-item-info__name">{{ group.name }}</span>
           </div>
         </div>
+        <view @click="addNewGroup" class="user-list-item">
+          <div class="add-icon mr-10">
+            <u-icon name="plus-circle" size="40"></u-icon>
+          </div>
+          <div class="user-item-info no-border">
+            <span class="user-item-info__name">创建新群聊</span>
+          </div>
+        </view>
       </div>
       <view class="contacts-title" v-if="friends && friends.length != 0"
         >联系人</view
@@ -36,6 +45,14 @@
             }}</span>
           </div>
         </div>
+        <view @click="addNewPerson" class="user-list-item">
+          <div class="add-icon mr-10">
+            <u-icon name="plus-circle" size="40"></u-icon>
+          </div>
+          <div class="user-item-info no-border">
+            <span class="user-item-info__name">添加新朋友</span>
+          </div>
+        </view>
       </div>
     </div>
   </div>
@@ -56,6 +73,16 @@ export default {
     this.init()
   },
   methods: {
+    addNewGroup() {
+      uni.navigateTo({
+        url: '/pages/chat/createNewGroup/index',
+      })
+    },
+    addNewPerson() {
+      uni.navigateTo({
+        url: '/pages/chat/findNewPerson/index',
+      })
+    },
     init() {
       let currentUser = uni.getStorageSync('currentUser')
       let friendList = restApi.findFriends(currentUser)
@@ -173,6 +200,9 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.no-border {
+  border: none !important;
 }
 .contacts .user-item-info__name {
   font-size: 30rpx;
