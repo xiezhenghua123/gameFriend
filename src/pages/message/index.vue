@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:52:09
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-08 00:00:51
+ * @LastEditTime: 2022-04-21 17:31:08
 -->
 <template>
   <view>
@@ -34,7 +34,7 @@ import minix from '../minix/index'
 export default {
   components: { contacts, conversations },
   computed: {
-    ...mapState('appState', ['isLogin']),
+    ...mapState('appState', ['isLogin'])
   },
   mixins: [minix],
   data() {
@@ -42,19 +42,19 @@ export default {
       show: true,
       activeStyle: {
         'font-weight': 'bold',
-        color: '#303133',
+        color: '#303133'
       },
       tab: 0,
       list: [
         {
           name: '会话',
-          key: 'conversations',
+          key: 'conversations'
         },
         {
           name: '队友',
-          key: 'contacts',
-        },
-      ],
+          key: 'contacts'
+        }
+      ]
     }
   },
   onPullDownRefresh() {
@@ -68,8 +68,8 @@ export default {
     click(data) {
       this.tab = data.index
       console.log(data)
-    },
-  },
+    }
+  }
 }
 </script>
 

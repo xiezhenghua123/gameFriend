@@ -4,8 +4,9 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 14:58:57
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-07 17:17:04
+ * @LastEditTime: 2022-04-21 19:23:17
 -->
+
 <script>
 export default {
   onLaunch: function () {
@@ -16,7 +17,7 @@ export default {
   },
   onHide: function () {
     console.log('App Hide')
-  },
+  }
 }
 </script>
 

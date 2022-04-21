@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 14:58:57
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-07 22:46:30
+ * @LastEditTime: 2022-04-21 19:53:54
  */
 import Vue from 'vue'
 import App from './App'
@@ -38,6 +38,6 @@ Vue.prototype.formatDate = function (t) {
 App.mpType = 'app'
 
 const app = new Vue({
-  ...App,
+  ...App
 })
 app.$mount()

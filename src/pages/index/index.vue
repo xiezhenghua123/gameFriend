@@ -4,71 +4,105 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-03-11 22:35:51
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-06 23:48:02
+ * @LastEditTime: 2022-04-21 19:45:02
 -->
 <template>
   <view>
-    <view v-if="isLogin" class="box sk-event-list">
-      <u-parse :content="html" @linkTap="linkTap"></u-parse>
-      <u-loadmore status="loading" v-show="show" />
+    <view v-if="isLogin" class="box">
+      <view v-for="item in gameListFormter" :key="item.id" class="content p-10">
+        <img :src="item.img" alt="" class="img" />
+        <view class="title">
+          {{ item.name }}
+        </view>
+        <view class="sign_up_time">
+          报名截止时间：{{ item.sign_up_time }}
+        </view>
+        <view class="game_time"> 比赛开始时间：{{ item.game_time }} </view>
+        <view class="organizer"> 主办方：{{ item.organizer }} </view>
+        <view class="bottom flex">
+          <span class="mr-10">收藏 {{ item.collections }}</span
+          >|<span class="mr-10 ml-10">{{ item.level }}</span
+          >|<span class="mr-10 ml-10">{{ item.subject }}</span>
+        </view>
+      </view>
+      <u-loadmore :status="status" />
     </view>
-    <confirm v-else></confirm>
+    <confirm v-else @isLogin="judgeLogin"></confirm>
   </view>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-
-import { getJobList } from '@/api/getJobList.js'
+import { getJobList } from '@/api/game.js'
 import minix from '../minix/index'
 
 export default {
   mixins: [minix],
   data() {
     return {
-      show: false,
-      html: '',
-      // style: {
-      //   img: 'height: 55px;width: 55px;',
-      // },
+      show: true,
       page: 1,
-      // list1: [
-      //   'https://cdn.uviewui.com/uview/swiper/swiper1.png',
-      //   'https://cdn.uviewui.com/uview/swiper/swiper2.png',
-      //   'https://cdn.uviewui.com/uview/swiper/swiper3.png',
-      // ],
+      status: 'loadmore',
+      gameList: []
     }
   },
+  onPullDownRefresh() {
+    this.page = 1
+    this.getList(this.page).then(({ data }) => {
+      this.gameList = data.gameList
+    })
+  },
   onLoad() {
-    // getJobList({ page: this.page }).then(res => {
-    //   this.html = `<div class="sk-event-list v-4-6">${res.data.list}</div>`
-    // })
+    if (this.isLogin) {
+      this.getList(this.page).then(({ data }) => {
+        this.gameList = data.gameList
+        if (data.total < 2) {
+          this.status = 'nomore'
+        }
+      })
+    }
   },
   onReachBottom() {
-    // this.show = true
-    // this.getList().then(() => {
-    //   this.show = false
-    // })
+    this.status = 'loading'
+    this.getList(++this.page).then(({ data }) => {
+      if (data.total) {
+        this.gameList.push(data.gameList)
+        this.status = 'loadmore'
+      } else {
+        this.status = 'nomore'
+      }
+    })
   },
+
   methods: {
-    linkTap(obj) {
-      console.log(obj)
+    judgeLogin(status) {
+      if (status) {
+        this.getList(this.page).then(({ data }) => {
+          this.gameList = data.gameList
+        })
+      }
     },
-    // getList() {
-    //   return new Promise((resolve, rej) => {
-    //     getJobList({ page: ++this.page }).then(res => {
-    //       this.html += `<div class="sk-event-list v-4-6">${res.data.list}</div>`
-    //       resolve()
-    //     })
-    //   })
-    // },
+    getList(page) {
+      return new Promise((resolve, rej) => {
+        getJobList(page)
+          .then(res => {
+            resolve(res)
+          })
+          .catch(err => {})
+      })
+    }
   },
   computed: {
     ...mapState('appState', ['isLogin']),
-  },
+    gameListFormter() {
+      return this.gameList.map(item => {
+        return { ...item, img: JSON.parse(item.img)[0] }
+      })
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-// @import './style.scss';
+@import './style.scss';
 </style>

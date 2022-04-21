@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-03-24 14:50:36
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-08 00:07:26
+ * @LastEditTime: 2022-04-21 19:34:40
  */
 import { mapState } from 'vuex'
 import renderConversations from './renderConversations'
@@ -15,10 +15,12 @@ export default {
   },
   mixins: [renderConversations],
   computed: {
-    ...mapState('appState', ['isLogin']),
+    ...mapState('appState', ['isLogin', 'userInfo'])
   },
   onLoad() {
-    this.$methods.chat.connect(this)
+    if (this.isLogin) {
+      this.$methods.chat.connect(this, this.userInfo)
+    }
   },
   onShow() {
     if (this.isLogin) {
@@ -41,8 +43,8 @@ export default {
               ' content:' +
               error.content
           )
-        },
+        }
       })
     }
-  },
+  }
 }

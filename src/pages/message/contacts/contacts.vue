@@ -25,9 +25,7 @@
           </div>
         </view>
       </div>
-      <view class="contacts-title" v-if="friends && friends.length != 0"
-        >联系人</view
-      >
+      <view class="contacts-title">联系人</view>
       <div class="user-list">
         <div
           class="user-list-item"
@@ -59,43 +57,50 @@
 </template>
 
 <script>
-import restApi from '@/goEasy/lib/restapi'
+// import restApi from '@/goEasy/lib/restapi'
+import { getFriendsList, getGroupList } from '@/api/user.js'
+import { mapState } from 'vuex'
 
 export default {
   name: 'contacts',
   data() {
     return {
       friends: [],
-      groups: [],
+      groups: []
     }
   },
   mounted() {
     this.init()
   },
+  computed: {
+    ...mapState('appState', ['userInfo'])
+  },
   methods: {
     addNewGroup() {
       uni.navigateTo({
-        url: '/pages/chat/createNewGroup/index',
+        url: '/pages/chat/createNewGroup/index'
       })
     },
     addNewPerson() {
       uni.navigateTo({
-        url: '/pages/chat/findNewPerson/index',
+        url: '/pages/chat/findNewPerson/index'
       })
     },
-    init() {
-      let currentUser = uni.getStorageSync('currentUser')
-      let friendList = restApi.findFriends(currentUser)
-      friendList.map((friend, index) => {
+    async init() {
+      //获取好友列表
+      const friends = await getFriendsList(this.userInfo.uuid)
+      friends.data.map((friend, index) => {
         friend.online = false
         this.$set(this.friends, index, friend)
       })
-      this.groups = restApi.findGroups(currentUser)
+      //获取群聊列表
+      const groups = await getGroupList(this.userInfo.uuid)
+      this.groups = groups.data
       this.subscribeUserPresence()
       this.hereNow()
       this.goEasy.im.on(this.GoEasy.IM_EVENT.USER_PRESENCE, user => {
         this.friends.map(friend => {
-          if (friend.uuid == user.id) {
+          if (friend.user_id == user.id) {
             let state = user.action === 'online' || user.action === 'join'
             this.$set(friend, 'online', state)
           }
@@ -105,7 +110,7 @@ export default {
     subscribeUserPresence() {
       let friendIds = []
       this.friends.map(friend => {
-        friendIds.push(friend.uuid)
+        friendIds.push(friend.user_id)
       })
       this.goEasy.im.subscribeUserPresence({
         userIds: friendIds,
@@ -114,14 +119,14 @@ export default {
         },
         onFailed: function (error) {
           console.log('订阅好友上下线失败', error)
-        },
+        }
       })
     },
     hereNow() {
       let self = this
       let friendIds = []
       this.friends.map(friend => {
-        friendIds.push(friend.uuid)
+        friendIds.push(friend.user_id)
       })
       this.goEasy.im.hereNow({
         userIds: friendIds,
@@ -136,13 +141,13 @@ export default {
         },
         onFailed: function (error) {
           console.log('获取好友在线状态失败', error)
-        },
+        }
       })
     },
     enterChat(uuid, type) {
       this.$methods.chat.enterChat(uuid, type, this)
-    },
-  },
+    }
+  }
 }
 </script>
 
