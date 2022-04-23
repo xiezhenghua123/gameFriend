@@ -4,10 +4,11 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:52:09
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-21 17:31:08
+ * @LastEditTime: 2022-04-22 22:38:23
 -->
 <template>
   <view>
+    <toast></toast>
     <u-tabs
       :current="tab"
       :list="list"
@@ -57,17 +58,22 @@ export default {
       ]
     }
   },
+  onLoad() {
+    this.reflesh()
+  },
   onPullDownRefresh() {
-    this.show = false
-    this.$nextTick(() => {
-      this.show = true
-      uni.stopPullDownRefresh()
-    })
+    this.reflesh()
   },
   methods: {
     click(data) {
       this.tab = data.index
       console.log(data)
+    },
+    reflesh() {
+      this.show = false
+      this.$nextTick(() => {
+        this.show = true
+      })
     }
   }
 }

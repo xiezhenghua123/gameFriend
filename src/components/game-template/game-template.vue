@@ -4,30 +4,34 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 16:34:15
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-04 19:43:54
+ * @LastEditTime: 2022-04-23 18:38:26
 -->
 <template>
   <view class="find">
     <view class="game-item p-10">
       <view class="top flex">
         <view class="person">
-          <u-avatar :src="item.avatarUrl" size="50"></u-avatar>
-          <view class="name">{{ item.username }}</view>
+          <u-avatar
+            :src="item.avatar ? 'item.avatar' : demoAvatar"
+            size="50"
+          ></u-avatar>
+          <view class="name">{{ item.name }}</view>
         </view>
-        <view class="type">{{ item.type }}</view>
+        <view class="type">{{ item.level }}比赛</view>
       </view>
       <view class="center flex">
         <view class="content">
           <view class="title">{{ item.title }}</view>
-          <view class="details">{{ item.details }}</view>
+          <view class="details">{{ item.theme }}</view>
         </view>
-        <img :src="item.imageUrl" alt="" class="img" />
+        <img :src="item.img" alt="" class="img" />
       </view>
       <view class="bottom flex">
         <view class="number-box">
-          <i class="iconfont icon-yanjing"></i>{{ item.number }}
+          <i class="iconfont icon-yanjing"></i>
+          <!-- {{ item.number }} -->
         </view>
-        <text>发布于{{ item.time }}</text>
+        <text>发布于{{ timeFormat(item.created_at) }}</text>
       </view>
     </view>
   </view>
@@ -38,12 +42,17 @@ export default {
   props: {
     item: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {}
   },
+  methods: {
+    timeFormat(time) {
+      return time.replace(/T/g, ' ').replace(/\.[\d]{6}Z/g, '')
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

@@ -57,7 +57,6 @@
 </template>
 
 <script>
-// import restApi from '@/goEasy/lib/restapi'
 import { getFriendsList, getGroupList } from '@/api/user.js'
 import { mapState } from 'vuex'
 
@@ -75,6 +74,7 @@ export default {
   computed: {
     ...mapState('appState', ['userInfo'])
   },
+
   methods: {
     addNewGroup() {
       uni.navigateTo({
@@ -88,19 +88,36 @@ export default {
     },
     async init() {
       //获取好友列表
-      const friends = await getFriendsList(this.userInfo.uuid)
-      friends.data.map((friend, index) => {
+      let imService = getApp().globalData.imService
+      //数据字段清洗
+
+      let friends = (await getFriendsList(this.userInfo.uuid)).data.map(
+        item => {
+          return { uuid: item.openid, name: item.name, avatar: item.avatar }
+        }
+      )
+      imService.setUser(friends)
+      friends.map((friend, index) => {
         friend.online = false
         this.$set(this.friends, index, friend)
       })
       //获取群聊列表
-      const groups = await getGroupList(this.userInfo.uuid)
-      this.groups = groups.data
+      let groups = (await getGroupList(this.userInfo.uuid)).data.map(item => {
+        return {
+          uuid: item.id,
+          name: item.name,
+          avatar: item.img,
+          create_userId: item.user_id
+        }
+      })
+      this.groups = groups
+      imService.setGroup(this.groups)
+      imService.subscribeGroupMessage()
       this.subscribeUserPresence()
       this.hereNow()
       this.goEasy.im.on(this.GoEasy.IM_EVENT.USER_PRESENCE, user => {
         this.friends.map(friend => {
-          if (friend.user_id == user.id) {
+          if (friend.uuid == user.id) {
             let state = user.action === 'online' || user.action === 'join'
             this.$set(friend, 'online', state)
           }
@@ -110,7 +127,7 @@ export default {
     subscribeUserPresence() {
       let friendIds = []
       this.friends.map(friend => {
-        friendIds.push(friend.user_id)
+        friendIds.push(friend.uuid)
       })
       this.goEasy.im.subscribeUserPresence({
         userIds: friendIds,
@@ -126,7 +143,7 @@ export default {
       let self = this
       let friendIds = []
       this.friends.map(friend => {
-        friendIds.push(friend.user_id)
+        friendIds.push(friend.uuid)
       })
       this.goEasy.im.hereNow({
         userIds: friendIds,

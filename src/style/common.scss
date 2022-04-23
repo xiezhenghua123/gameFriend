@@ -4,13 +4,16 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 20:59:08
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-04 21:05:13
+ * @LastEditTime: 2022-04-23 17:48:02
  */
 body {
   font-size: $uni-font-size-base;
   color: $uni-text-color;
+  width: 100%;
+  height: 100%;
   // background-color: $uni-bg-color-grey;
 }
+
 .ml-10 {
   margin-left: 10px;
 }
@@ -51,4 +54,7 @@ body {
 .flex {
   display: flex;
   align-items: center;
+}
+.height_100 {
+  height: 100%;
 }

@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 17:10:08
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-21 19:25:45
+ * @LastEditTime: 2022-04-23 15:10:23
  */
 
 import { apiRoot } from '../requestUrl/index.js'
@@ -37,7 +37,7 @@ const requestInterceptors = config => {
 
 const responseInterceptors = response => {
   if (response.data.code !== 0) {
-    errorToast(response.data)
+    errorToast(response.data.status)
     return
   }
   return response.data

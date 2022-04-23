@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-05 15:01:39
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-21 15:11:11
+ * @LastEditTime: 2022-04-22 20:53:09
  */
 import GoEasy from 'goeasy'
 
@@ -27,10 +27,10 @@ goEasy.onClickNotification(message => {
   let newUrl
   switch (message.toType) {
     case GoEasy.IM_SCENE.PRIVATE:
-      newUrl = '/pages/chat/privateChat/privateChat?to=' + message.senderId
+      newUrl = '/pages/chat/privateChat/privateChat?id=' + message.senderId
       break
     case GoEasy.IM_SCENE.GROUP:
-      newUrl = '/pages/chat/groupChat/groupChat?to=' + message.groupId
+      newUrl = '/pages/chat/groupChat/groupChat?id=' + message.groupId
       break
   }
 

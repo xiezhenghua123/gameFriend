@@ -4,42 +4,84 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-07 17:14:52
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-08 16:56:05
+ * @LastEditTime: 2022-04-23 00:57:28
 -->
 <template>
-  <view class="group-member">
-    <view class="member" v-for="(member, key) in users" :key="key">
-      <image :src="member.avatar" class="group-member__item"> </image>
-      <text> {{ member.name }}</text>
+  <view>
+    <view class="group-member">
+      <view class="member" v-for="(member, key) in users" :key="key">
+        <image :src="member.avatar" class="group-member__item"> </image>
+        <text> {{ member.name }}</text>
+      </view>
+      <view class="addGroupPerson" @click="optionGroupPerson('add')">
+        <u-icon name="plus-circle" size="40"></u-icon>
+      </view>
+      <view
+        class="addGroupPerson"
+        @click="optionGroupPerson('remove')"
+        v-if="userInfo.uuid == create_id"
+      >
+        <u-icon name="minus-circle" size="40"></u-icon>
+      </view>
     </view>
-    <view class="addGroupPerson" @click="addGroupPerson">
-      <u-icon name="plus-circle" size="40"></u-icon>
+    <view class="m-10" v-if="userInfo.uuid == create_id">
+      <u-button type="error" text="解散此群" @click="removeGroup"></u-button>
     </view>
   </view>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { delGroup } from '@/api/user.js'
 export default {
   name: 'member',
   data() {
     return {
       users: {},
+      create_id: ''
     }
   },
-  onLoad(options) {
+  computed: {
+    ...mapState('appState', ['userInfo'])
+  },
+  onLoad() {
     //对话数据
-    this.users = JSON.parse(options.users)
+    // let groupId = getApp().globalData.groupId
+    this.create_id = getApp().globalData.group.create_userId
+    this.users = getApp().globalData.group.userList
     uni.setNavigationBarTitle({
-      title: '成员（' + (Object.keys(this.users).length || 0) + '）',
+      title: '成员（' + (Object.keys(this.users).length || 0) + '）'
     })
   },
   methods: {
-    addGroupPerson() {
-      uni.navigateTo({
-        url: '/pages/chat/groupAddPerson/index',
+    removeGroup() {
+      const that = this
+      uni.showModal({
+        title: '确认移除此群聊？',
+        success(res) {
+          if (res.confirm) {
+            delGroup(that.userInfo.uuid, getApp().globalData.group.uuid).then(
+              data => {
+                uni.switchTab({
+                  url: '/pages/message/index',
+                  success() {
+                    let page = getCurrentPages().pop() //当前页面
+                    if (page == undefined || page == null) return
+                    page.onLoad() //或者其它操作
+                  }
+                })
+              }
+            )
+          }
+        }
       })
     },
-  },
+    optionGroupPerson(type) {
+      uni.navigateTo({
+        url: `/pages/chat/groupAddPerson/index?type=${type}`
+      })
+    }
+  }
 }
 </script>
 

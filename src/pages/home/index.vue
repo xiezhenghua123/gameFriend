@@ -4,16 +4,16 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:47
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-04 16:29:34
+ * @LastEditTime: 2022-04-23 16:20:37
 -->
 <template>
   <view class="content">
     <view v-if="isLogin">
       <view class="top" @click="uploadAvatar">
         <view class="message">
-          <u-avatar size="60" :src="userInfo.avatarUrl"></u-avatar>
+          <u-avatar size="60" :src="userInfo.avatar"></u-avatar>
           <view class="m_right">
-            <view class="message_name">{{ userInfo.nickName }}</view>
+            <view class="message_name">{{ userInfo.name }}</view>
             <view class="message_identity"> | 信管 | 湘潭大学 </view>
           </view>
         </view>
@@ -55,17 +55,17 @@ import { feature } from './data.js'
 export default {
   data() {
     return {
-      feature_data: feature,
+      feature_data: feature
     }
   },
   onLoad() {},
   computed: {
-    ...mapState('appState', ['isLogin', 'userInfo']),
+    ...mapState('appState', ['isLogin', 'userInfo'])
   },
   methods: {
     clickFeature(key) {
       uni.navigateTo({
-        url: `/pages/${key}/index`,
+        url: `/pages/${key}/index`
       })
     },
     uploadAvatar() {
@@ -73,10 +73,10 @@ export default {
         count: 1,
         success(path) {
           console.log(path.tempFilePaths)
-        },
+        }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

@@ -15,6 +15,13 @@
       }
     },
     {
+      "path": "pages/release/index",
+      "style": {
+        "navigationBarTitleText": "发帖",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
       "path": "pages/home/index",
       "style": {
         "navigationBarTitleText": "我的"
@@ -119,6 +126,12 @@
         "iconPath": "static/tabbar/teammate.png",
         "selectedIconPath": "static/tabbar/teammate-on.png",
         "text": "找队友"
+      },
+      {
+        "pagePath": "pages/release/index",
+        "iconPath": "static/tabbar/release.png",
+        "selectedIconPath": "static/tabbar/release-on.png",
+        "text": "发贴"
       },
       {
         "pagePath": "pages/message/index",

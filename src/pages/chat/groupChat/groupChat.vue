@@ -17,7 +17,7 @@
         <view
           class="message-item"
           :class="{
-            self: message.senderId == (currentUser && currentUser.uuid),
+            self: message.senderId == (currentUser && currentUser.uuid)
           }"
         >
           <view class="avatar">
@@ -147,11 +147,12 @@
 import GoEasyAudioPlayer from '@/components/GoEasyAudioPlayer/GoEasyAudioPlayer'
 const recorderManager = uni.getRecorderManager()
 import EmojiDecoder from '@/goEasy/lib/EmojiDecoder'
+import { getGroupDetail } from '@/api/user.js'
 
 export default {
   name: 'groupChat',
   components: {
-    GoEasyAudioPlayer,
+    GoEasyAudioPlayer
   },
   data() {
     // 定义表情
@@ -162,7 +163,7 @@ export default {
       '[便便]': 'emoji_5@2x.png',
       '[信封]': 'emoji_6@2x.png',
       '[偷笑]': 'emoji_7@2x.png',
-      '[傲慢]': 'emoji_8@2x.png',
+      '[傲慢]': 'emoji_8@2x.png'
     }
     return {
       //聊天文本框
@@ -180,46 +181,55 @@ export default {
         url: emojiUrl,
         map: emojiMap,
         show: false,
-        decoder: new EmojiDecoder(emojiUrl, emojiMap),
+        decoder: new EmojiDecoder(emojiUrl, emojiMap)
       },
       more: {
         //更多按钮
-        show: false,
+        show: false
       },
       audio: {
         //语音录音中
         recording: false,
 
         //录音按钮展示
-        visible: false,
+        visible: false
       },
       video: {
         visible: false,
         url: '',
-        context: null,
-      },
+        context: null
+      }
     }
   },
   onReady() {
     this.video.context = uni.createVideoContext('videoPlayer', this)
-    uni.setNavigationBarTitle({
-      title:
-        this.group.name + '（' + Object.keys(this.groupMembers).length + '）',
-    })
   },
   onShow() {
     this.more.show = false
     this.emoji.show = false
   },
-  onLoad(options) {
+  async onLoad(options) {
+    console.log(options)
     let imService = getApp().globalData.imService
-    this.currentUser = uni.getStorageSync('currentUser')
     //聊天对象
-    let groupId = options.to
+    let groupId = options.id
+    // getApp().globalData.groupId = groupId
     //从服务器获取最新的群信息
-    this.group = imService.findGroupById(groupId)
+
     this.messages = imService.getGroupMessages(groupId)
-    this.groupMembers = imService.getGroupMembers(groupId)
+    const { data } = await getGroupDetail(groupId)
+    // 获取群成员
+    this.groupMembers = data.map(item => {
+      return { uuid: item.openid, avatar: item.avatar, name: item.name }
+    })
+    imService.setGroupUser(groupId, this.groupMembers)
+    this.group = imService.findGroupById(groupId)
+    console.log(this.group)
+    getApp().globalData.group = this.group
+    // 设置标题
+    uni.setNavigationBarTitle({
+      title: this.group.name + '（' + this.groupMembers.length + '）'
+    })
     //监听群消息
     imService.onNewGroupMessageReceive = (groupId, message) => {
       if (groupId === this.group.uuid) {
@@ -287,8 +297,8 @@ export default {
             type: this.GoEasy.IM_SCENE.GROUP,
             data: {
               name: this.group.name,
-              avatar: this.group.avatar,
-            },
+              avatar: this.group.avatar
+            }
           },
           file: res,
           onProgress: function (progress) {
@@ -296,8 +306,8 @@ export default {
           },
           notification: {
             title: this.currentUser.name + '发来一段语音',
-            body: '[语音消息]', // 字段最长 50 字符
-          },
+            body: '[语音消息]' // 字段最长 50 字符
+          }
         })
         this.sendMessage(audioMessage)
       })
@@ -318,7 +328,7 @@ export default {
         },
         onFailed: function (error) {
           console.log('发送失败:', error)
-        },
+        }
       })
     },
     sendTextMessage() {
@@ -335,13 +345,13 @@ export default {
             type: this.GoEasy.IM_SCENE.GROUP,
             data: {
               name: this.group.name,
-              avatar: this.group.avatar,
-            },
+              avatar: this.group.avatar
+            }
           },
           notification: {
             title: this.currentUser.name + '发来一段文字',
-            body: body, // 字段最长 50 字符
-          },
+            body: body // 字段最长 50 字符
+          }
         })
         this.sendMessage(textMessage)
       }
@@ -358,8 +368,8 @@ export default {
               type: this.GoEasy.IM_SCENE.GROUP,
               data: {
                 name: this.group.name,
-                avatar: this.group.avatar,
-              },
+                avatar: this.group.avatar
+              }
             },
             file: res,
             onProgress: function (progress) {
@@ -367,11 +377,11 @@ export default {
             },
             notification: {
               title: this.currentUser.name + '发来一个视频',
-              body: '[视频消息]', // 字段最长 50 字符
-            },
+              body: '[视频消息]' // 字段最长 50 字符
+            }
           })
           this.sendMessage(videoMessage)
-        },
+        }
       })
     },
     sendImage() {
@@ -384,8 +394,8 @@ export default {
               type: this.GoEasy.IM_SCENE.GROUP,
               data: {
                 name: this.group.name,
-                avatar: this.group.avatar,
-              },
+                avatar: this.group.avatar
+              }
             },
             file: res,
             onProgress: function (progress) {
@@ -393,11 +403,11 @@ export default {
             },
             notification: {
               title: this.currentUser.name + '发来一张图片',
-              body: '[图片消息]', // 字段最长 50 字符
-            },
+              body: '[图片消息]' // 字段最长 50 字符
+            }
           })
           this.sendMessage(imageMessage)
-        },
+        }
       })
     },
     loadMoreHistoryMessage() {
@@ -442,15 +452,15 @@ export default {
             )
           }
           uni.stopPullDownRefresh()
-        },
+        }
       })
     },
     showMembers() {
       //显示群成员
       uni.navigateTo({
-        url:
-          '/pages/chat/groupChat/member?users=' +
-          JSON.stringify(this.groupMembers),
+        url: `/pages/chat/groupChat/member?users= ${JSON.stringify(
+          this.groupMembers
+        )}&create_id=${this.group.create_userId}`
       })
     },
     onRecordStart() {
@@ -461,7 +471,7 @@ export default {
         uni.showModal({
           title: '录音错误',
           content:
-            '请在app和小程序端体验录音，Uni官方明确H5不支持getRecorderManager, 详情查看Uni官方文档',
+            '请在app和小程序端体验录音，Uni官方明确H5不支持getRecorderManager, 详情查看Uni官方文档'
         })
       }
     },
@@ -475,7 +485,7 @@ export default {
     showImageFullScreen(e) {
       let imagesUrl = [e.currentTarget.dataset.url]
       uni.previewImage({
-        urls: imagesUrl,
+        urls: imagesUrl
       })
     },
     //语音录制按钮和键盘输入的切换
@@ -487,7 +497,7 @@ export default {
       this.video.url = e.currentTarget.dataset.url
       this.$nextTick(() => {
         this.video.context.requestFullScreen({
-          direction: 0,
+          direction: 0
         })
         this.video.context.play()
       })
@@ -514,22 +524,22 @@ export default {
     selectEmoji(emojiKey) {
       this.content += emojiKey
     },
-    showCustomMessageForm() {
-      let to = {
-        avatar: this.group.avatar,
-        id: this.group.uuid,
-        type: this.GoEasy.IM_SCENE.GROUP,
-        name: this.group.name,
-      }
-      uni.navigateTo({
-        url: '../customMessage/customMessage?to=' + JSON.stringify(to),
-      })
-    },
+    // showCustomMessageForm() {
+    //   let to = {
+    //     avatar: this.group.avatar,
+    //     id: this.group.uuid,
+    //     type: this.GoEasy.IM_SCENE.GROUP,
+    //     name: this.group.name
+    //   }
+    //   uni.navigateTo({
+    //     url: '../customMessage/customMessage?to=' + JSON.stringify(to)
+    //   })
+    // },
     scrollToBottom() {
       this.$nextTick(function () {
         uni.pageScrollTo({
           scrollTop: 2000000,
-          duration: 10,
+          duration: 10
         })
       })
     },
@@ -543,10 +553,10 @@ export default {
         onFailed: function (error) {
           //标记失败
           console.log(error)
-        },
+        }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

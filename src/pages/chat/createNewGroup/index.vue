@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-08 15:15:15
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-21 20:36:14
+ * @LastEditTime: 2022-04-23 00:49:39
 -->
 <template>
   <view class="m-10">
@@ -27,12 +27,8 @@
     <view>
       <view class="label">群聊成员：</view>
       <checkbox-group @change="checkboxChange" v-model="selectFriends">
-        <view
-          class="user-item mb-10"
-          v-for="item in friends"
-          :key="item.user_id"
-        >
-          <checkbox :name="item.user_id" :value="item.user_id"> </checkbox>
+        <view class="user-item mb-10" v-for="item in friends" :key="item.uuid">
+          <checkbox :name="item.uuid" :value="item.uuid"> </checkbox>
           <div class="user-item-avatar">
             <image :src="item.avatar" />
           </div>
@@ -54,7 +50,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import { getFriendsList, createGroup } from '@/api/user.js'
+import { createGroup } from '@/api/user.js'
 import { successToast, errorToast } from '@/components/toast/index.js'
 
 export default {
@@ -89,11 +85,17 @@ export default {
         friends: this.selectFriends,
         groupName: this.name,
         img: this.imgFile
-      }).then(({ code }) => {
-        if (code === 0) {
+      }).then(({ data }) => {
+        if (data) {
           successToast('创建成功！')
+          getApp().globalData.imService.groups.push({
+            uuid: data.id,
+            name: data.name,
+            avatar: this.imgFile,
+            create_userId: this.userInfo.uuid
+          })
           uni.navigateTo({
-            url: `/pages/chat/groupChat/groupChat?id=${123}&name=${123}`
+            url: `/pages/chat/groupChat/groupChat?id=${data.id}&name=${data.name}`
           })
         }
       })
@@ -121,7 +123,7 @@ export default {
       })
     },
     async init() {
-      this.friends = await getFriendsList(this.userInfo.uuid).data
+      this.friends = getApp().globalData.imService.friends
     },
     checkboxChange({ detail }) {
       this.selectFriends = detail.value

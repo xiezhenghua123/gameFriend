@@ -4,10 +4,11 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-03-11 22:35:51
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-21 19:45:02
+ * @LastEditTime: 2022-04-22 18:10:07
 -->
 <template>
   <view>
+    <toast></toast>
     <view v-if="isLogin" class="box">
       <view v-for="item in gameListFormter" :key="item.id" class="content p-10">
         <img :src="item.img" alt="" class="img" />
