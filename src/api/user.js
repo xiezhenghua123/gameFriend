@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-21 15:55:12
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 15:51:52
+ * @LastEditTime: 2022-04-24 23:24:07
  */
 import request from './request'
 
@@ -94,6 +94,56 @@ const delGroup = (uid, groupId) => {
   )
 }
 
+const findPerson = phone => {
+  return request(
+    'get',
+    'friend/search',
+    {},
+    {
+      query: {
+        phone: phone
+      }
+    }
+  )
+}
+
+const addFriend = (uid, data) => {
+  return request('post', 'friend/add/:uid', data, {
+    params: {
+      uid: uid
+    }
+  })
+}
+
+const friendsNotice = uid => {
+  return request(
+    'get',
+    'friend/notice/:uid',
+    {},
+    {
+      params: {
+        uid: uid
+      }
+    }
+  )
+}
+
+const addFriendConfirm = (uid, data) => {
+  return request('put', 'friend/:uid', data, {
+    params: {
+      uid: uid
+    }
+  })
+}
+
+const delFriend = (uid, data) => {
+  return request('delete', 'friend/del/:uid', data, {
+    params: {
+      uid: uid
+    }
+  })
+}
+
 export {
   login,
   getFriendsList,
@@ -102,5 +152,10 @@ export {
   getGroupDetail,
   deleteGroupUser,
   addGroupUser,
-  delGroup
+  delGroup,
+  findPerson,
+  addFriend,
+  friendsNotice,
+  addFriendConfirm,
+  delFriend
 }

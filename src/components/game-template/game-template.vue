@@ -4,17 +4,14 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 16:34:15
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 18:38:26
+ * @LastEditTime: 2022-04-24 19:06:33
 -->
 <template>
   <view class="find">
     <view class="game-item p-10">
       <view class="top flex">
         <view class="person">
-          <u-avatar
-            :src="item.avatar ? 'item.avatar' : demoAvatar"
-            size="50"
-          ></u-avatar>
+          <u-avatar :src="item.avatar" size="50"></u-avatar>
           <view class="name">{{ item.name }}</view>
         </view>
         <view class="type">{{ item.level }}比赛</view>
@@ -29,7 +26,7 @@
       <view class="bottom flex">
         <view class="number-box">
           <i class="iconfont icon-yanjing"></i>
-          <!-- {{ item.number }} -->
+          {{ item.views }}
         </view>
         <text>发布于{{ timeFormat(item.created_at) }}</text>
       </view>

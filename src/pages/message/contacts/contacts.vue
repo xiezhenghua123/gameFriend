@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { getFriendsList, getGroupList } from '@/api/user.js'
+// import { getFriendsList, getGroupList } from '@/api/user.js'
 import { mapState } from 'vuex'
 
 export default {
@@ -87,31 +87,12 @@ export default {
       })
     },
     async init() {
-      //获取好友列表
       let imService = getApp().globalData.imService
-      //数据字段清洗
-
-      let friends = (await getFriendsList(this.userInfo.uuid)).data.map(
-        item => {
-          return { uuid: item.openid, name: item.name, avatar: item.avatar }
-        }
-      )
-      imService.setUser(friends)
-      friends.map((friend, index) => {
+      imService.friends.map((friend, index) => {
         friend.online = false
         this.$set(this.friends, index, friend)
       })
-      //获取群聊列表
-      let groups = (await getGroupList(this.userInfo.uuid)).data.map(item => {
-        return {
-          uuid: item.id,
-          name: item.name,
-          avatar: item.img,
-          create_userId: item.user_id
-        }
-      })
-      this.groups = groups
-      imService.setGroup(this.groups)
+      this.groups = imService.groups
       imService.subscribeGroupMessage()
       this.subscribeUserPresence()
       this.hereNow()

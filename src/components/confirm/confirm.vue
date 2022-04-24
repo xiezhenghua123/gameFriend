@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 20:42:00
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 00:18:11
+ * @LastEditTime: 2022-04-25 00:09:46
 -->
 <template>
   <view>
@@ -14,7 +14,7 @@
       </u-button>
       <u-modal :show="show" title="填写手机号" :showConfirmButton="false">
         <u--form :model="form" ref="uForm" :rules="rules">
-          <u-form-item label="姓名" prop="phone" required>
+          <u-form-item label="手机号:" prop="phone" required>
             <u--input
               placeholder="请输入手机号"
               border="surround"

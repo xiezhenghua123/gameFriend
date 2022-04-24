@@ -1,5 +1,15 @@
 <template>
   <view class="chatInterface">
+    <view
+      class="group-icon"
+      @click="showDetails"
+      style="width: auto; height: auto; padding: 6rpx"
+    >
+      <i
+        class="iconfont icon-jibenziliao"
+        style="color: #fff; font-size: 48rpx"
+      ></i>
+    </view>
     <view class="scroll-view">
       <view class="all-history-loaded">
         {{ allHistoryLoaded ? '已经没有更多的历史消息' : '下拉获取历史消息' }}
@@ -13,7 +23,7 @@
         <view
           class="message-item"
           :class="{
-            self: message.senderId == (currentUser && currentUser.uuid),
+            self: message.senderId == (currentUser && currentUser.uuid)
           }"
         >
           <view
@@ -158,7 +168,7 @@ const recorderManager = uni.getRecorderManager()
 export default {
   name: 'privateChat',
   components: {
-    GoEasyAudioPlayer,
+    GoEasyAudioPlayer
   },
   data() {
     let emojiUrl = 'https://imgcache.qq.com/open/qcloud/tim/assets/emoji/'
@@ -168,7 +178,7 @@ export default {
       '[便便]': 'emoji_5@2x.png',
       '[信封]': 'emoji_6@2x.png',
       '[偷笑]': 'emoji_7@2x.png',
-      '[傲慢]': 'emoji_8@2x.png',
+      '[傲慢]': 'emoji_8@2x.png'
     }
     return {
       //聊天文本框
@@ -185,30 +195,30 @@ export default {
         url: emojiUrl,
         map: emojiMap,
         show: false,
-        decoder: new EmojiDecoder(emojiUrl, emojiMap),
+        decoder: new EmojiDecoder(emojiUrl, emojiMap)
       },
       more: {
         //更多按钮
-        show: false,
+        show: false
       },
       audio: {
         //语音录音中
         recording: false,
         //录音按钮展示
-        visible: false,
+        visible: false
       },
       video: {
         visible: false,
         url: '',
-        context: null,
-      },
+        context: null
+      }
     }
   },
   onReady() {
     this.video.context = uni.createVideoContext('videoPlayer', this)
     // https://uniapp.dcloud.io/api/ui/navigationbar?id=setnavigationbartitle
     uni.setNavigationBarTitle({
-      title: this.friend.name,
+      title: this.friend.name
     })
   },
   onShow() {
@@ -217,9 +227,9 @@ export default {
   },
   onLoad(options) {
     let imService = getApp().globalData.imService
-    this.currentUser = uni.getStorageSync('currentUser')
+    this.currentUser = imService.currentUser
     //聊天对象
-    let friendId = options.to
+    let friendId = options.id
     //从服务器获取最新的好友信息
     this.friend = imService.findFriendById(friendId)
     console.log('onLoad friend - ', this.friend)
@@ -253,6 +263,11 @@ export default {
     }
   },
   methods: {
+    showDetails() {
+      uni.navigateTo({
+        url: `/pages/my-information/index?id=${this.friend.uuid}&type=del`
+      })
+    },
     //渲染文本消息，如果包含表情，替换为图片
     //todo:本不需要该方法，可以在标签里完成，但小程序有兼容性问题，被迫这样实现
     renderTextMessage(message) {
@@ -291,8 +306,8 @@ export default {
             type: this.GoEasy.IM_SCENE.PRIVATE,
             data: {
               name: this.friend.name,
-              avatar: this.friend.avatar,
-            },
+              avatar: this.friend.avatar
+            }
           },
           file: res,
           onProgress: function (progress) {
@@ -300,8 +315,8 @@ export default {
           },
           notification: {
             title: this.currentUser.name + '发来一段语音',
-            body: '[语音消息]', // 字段最长 50 字符
-          },
+            body: '[语音消息]' // 字段最长 50 字符
+          }
         })
         this.sendMessage(audioMessage)
       })
@@ -322,7 +337,7 @@ export default {
         },
         onFailed: function (error) {
           console.log('发送失败:', error)
-        },
+        }
       })
     },
     sendTextMessage() {
@@ -339,13 +354,13 @@ export default {
             type: this.GoEasy.IM_SCENE.PRIVATE,
             data: {
               name: this.friend.name,
-              avatar: this.friend.avatar,
-            },
+              avatar: this.friend.avatar
+            }
           },
           notification: {
             title: this.currentUser.name + '发来一段文字',
-            body: body,
-          },
+            body: body
+          }
         })
         this.sendMessage(textMessage)
       }
@@ -394,7 +409,7 @@ export default {
             )
           }
           uni.stopPullDownRefresh()
-        },
+        }
       })
     },
     //语音录制按钮和键盘输入的切换
@@ -402,7 +417,7 @@ export default {
       this.audio.visible = !this.audio.visible
       if (uni.authorize) {
         uni.authorize({
-          scope: 'scope.record',
+          scope: 'scope.record'
         })
       }
     },
@@ -413,7 +428,7 @@ export default {
         uni.showModal({
           title: '录音错误',
           content:
-            '请在app和小程序端体验录音，Uni官方明确H5不支持getRecorderManager, 详情查看Uni官方文档',
+            '请在app和小程序端体验录音，Uni官方明确H5不支持getRecorderManager, 详情查看Uni官方文档'
         })
       }
     },
@@ -434,8 +449,8 @@ export default {
               type: this.GoEasy.IM_SCENE.PRIVATE,
               data: {
                 name: this.friend.name,
-                avatar: this.friend.avatar,
-              },
+                avatar: this.friend.avatar
+              }
             },
             file: res,
             onProgress: function (progress) {
@@ -443,11 +458,11 @@ export default {
             },
             notification: {
               title: this.currentUser.name + '发来一个视频',
-              body: '[视频消息]', // 字段最长 50 字符
-            },
+              body: '[视频消息]' // 字段最长 50 字符
+            }
           })
           this.sendMessage(videoMessage)
-        },
+        }
       })
     },
     sendImage() {
@@ -460,8 +475,8 @@ export default {
               type: this.GoEasy.IM_SCENE.PRIVATE,
               data: {
                 name: this.friend.name,
-                avatar: this.friend.avatar,
-              },
+                avatar: this.friend.avatar
+              }
             },
             file: res,
             onProgress: function (progress) {
@@ -469,17 +484,17 @@ export default {
             },
             notification: {
               title: this.currentUser.name + '发来一张图片',
-              body: '[图片消息]', // 字段最长 50 字符
-            },
+              body: '[图片消息]' // 字段最长 50 字符
+            }
           })
           this.sendMessage(imageMessage)
-        },
+        }
       })
     },
     showImageFullScreen(e) {
       var imagesUrl = [e.currentTarget.dataset.url]
       uni.previewImage({
-        urls: imagesUrl,
+        urls: imagesUrl
       })
     },
     playVideo(e) {
@@ -487,7 +502,7 @@ export default {
       this.video.url = e.currentTarget.dataset.url
       this.$nextTick(() => {
         this.video.context.requestFullScreen({
-          direction: 0,
+          direction: 0
         })
         this.video.context.play()
       })
@@ -519,17 +534,17 @@ export default {
         id: this.friend.uuid,
         name: this.friend.name,
         avatar: this.friend.avatar,
-        type: this.GoEasy.IM_SCENE.PRIVATE,
+        type: this.GoEasy.IM_SCENE.PRIVATE
       }
       uni.navigateTo({
-        url: '../customMessage/customMessage?to=' + JSON.stringify(to),
+        url: '../customMessage/customMessage?to=' + JSON.stringify(to)
       })
     },
     scrollToBottom() {
       this.$nextTick(function () {
         uni.pageScrollTo({
           scrollTop: 2000000,
-          duration: 10,
+          duration: 10
         })
       })
     },
@@ -541,10 +556,10 @@ export default {
         },
         onFailed: function (error) {
           console.log(error)
-        },
+        }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

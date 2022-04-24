@@ -4,10 +4,10 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 17:05:11
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 18:47:23
+ * @LastEditTime: 2022-04-24 20:17:44
 -->
 <template>
-  <view>
+  <view style="margin-bottom: 120rpx">
     <u-toast ref="uToast"></u-toast>
     <view class="top-box m-10">
       <view class="person">
@@ -16,7 +16,7 @@
       </view>
       <view class="operation-box">
         <view class="collect mr-10">
-          <view @click.native.stop="clickIcon"
+          <view @click="clickIcon"
             ><u-icon
               :name="favorite ? 'star-fill' : 'star'"
               size="22"
@@ -24,9 +24,23 @@
             ></u-icon
           ></view>
         </view>
-        <view class="see-game">查看比赛</view>
+        <view class="see-game" v-if="isMyself">
+          <u-button
+            type="primary"
+            text="编辑"
+            @click="editShow = true"
+          ></u-button>
+        </view>
       </view>
     </view>
+    <u-modal :show="editShow" title="编辑帖子" :showConfirmButton="fasle">
+      <releaseTemplate
+        :initData="initData"
+        @getData="edit"
+        style="width: 100%"
+        type="edit"
+      ></releaseTemplate>
+    </u-modal>
     <view class="content-box">
       <view class="game m-10">
         <img :src="initData.img" alt="" class="game-img" />
@@ -60,9 +74,17 @@
   </view>
 </template>
 <script>
+import { getInvitationDetails, editInvitation } from '@/api/Invitation.js'
+import { mapState } from 'vuex'
+import releaseTemplate from '../release/release-template/index.vue'
+
 export default {
+  components: {
+    releaseTemplate
+  },
   data() {
     return {
+      editShow: false,
       answerData: '',
       favorite: false,
       comments: [
@@ -84,12 +106,30 @@ export default {
       initData: {}
     }
   },
-  onLoad({ data }) {
-    this.initData = JSON.parse(data)
+  async onLoad({ id }) {
+    const { data } = await getInvitationDetails(id)
+    this.initData = data
+  },
+  computed: {
+    ...mapState('appState', ['userInfo']),
+    isMyself() {
+      return this.initData.publisher === this.userInfo.uuid
+    }
   },
   methods: {
     timeFormat(time) {
       return time.replace(/T/g, ' ').replace(/\.[\d]{6}Z/g, '')
+    },
+    edit(editData) {
+      editInvitation(editData.id, editData).then(async () => {
+        this.$refs.uToast.show({
+          message: '修改成功',
+          type: 'success'
+        })
+        this.editShow = false
+        const { data } = await getInvitationDetails(editData.id)
+        this.initData = data
+      })
     },
     clickIcon() {
       this.favorite = !this.favorite

@@ -209,8 +209,8 @@ export default {
     this.emoji.show = false
   },
   async onLoad(options) {
-    console.log(options)
     let imService = getApp().globalData.imService
+    this.currentUser = imService.currentUser
     //聊天对象
     let groupId = options.id
     // getApp().globalData.groupId = groupId
@@ -224,7 +224,6 @@ export default {
     })
     imService.setGroupUser(groupId, this.groupMembers)
     this.group = imService.findGroupById(groupId)
-    console.log(this.group)
     getApp().globalData.group = this.group
     // 设置标题
     uni.setNavigationBarTitle({

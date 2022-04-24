@@ -2,27 +2,16 @@
  * @Descripttion: 
  * @version: 
  * @Author: ZhenghuaXie
- * @Date: 2022-04-08 16:27:20
+ * @Date: 2022-04-24 21:15:26
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-24 20:41:41
+ * @LastEditTime: 2022-04-24 22:07:07
 -->
 <template>
-  <view class="m-10">
+  <div class="m-10">
     <toast></toast>
-    <view class="flex mb-10">
-      <view class="label">电话号码：</view
-      ><u-input v-model="tel" placeholder="请输入电话号码查询用户"></u-input>
-    </view>
-    <u-button
-      text="搜索用户"
-      type="primary"
-      size="large"
-      @click="find"
-    ></u-button>
-    <u-divider></u-divider>
     <view v-if="person.length">
       <view
-        class="user-item mb-10"
+        class="user-item p-10"
         v-for="item in person"
         :key="item.uuid"
         @click="toPersonDetail"
@@ -36,42 +25,38 @@
           </div>
         </view>
         <view class="button" @click.stop="add(item.openid)">
-          <u-button text="添加" type="primary"></u-button>
+          <u-button
+            :text="addStatus ? '已添加' : '添加'"
+            :disabled="addStatus"
+            type="primary"
+          ></u-button>
         </view>
       </view>
     </view>
-  </view>
+  </div>
 </template>
 <script>
-import { findPerson, addFriend } from '@/api/user.js'
-import { successToast } from '@/components/toast/index.js'
+import { addFriendConfirm } from '@/api/user.js'
+import { successToast } from '../../../components/toast'
 import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      tel: '',
-      person: []
+      person: [],
+      addStatus: false
     }
   },
   computed: {
     ...mapState('appState', ['userInfo'])
   },
+  onLoad({ data }) {
+    this.person = JSON.parse(data)
+  },
   methods: {
-    toPersonDetail() {
-      uni.navigateTo({
-        url: '/pages/my-information/index?type=other'
-      })
-    },
-    find() {
-      findPerson(this.tel).then(({ data }) => {
-        this.person = data
-      })
-    },
     add(id) {
-      addFriend(this.userInfo.uuid, {
-        friend: id
-      }).then(() => {
-        successToast('添加好友通知已发送！')
+      addFriendConfirm(this.userInfo.uuid, { friend: id }).then(() => {
+        successToast('添加成功！')
+        this.addStatus = true
       })
     }
   }
@@ -84,6 +69,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding-left: 20rpx;
+  border-bottom: 1px solid #efefef;
   &-avatar {
     width: 96rpx;
     height: 96rpx;

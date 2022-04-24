@@ -4,11 +4,12 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 15:28:59
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-08 16:49:40
+ * @LastEditTime: 2022-04-25 00:09:10
 -->
 
 <template>
   <view class="content">
+    <toast></toast>
     <view class="top p-10 border-b">
       <view class="flex">
         <u-avatar :src="initData.imgUrl" size="55"></u-avatar>
@@ -97,20 +98,29 @@
         </view>
       </u-form>
     </view>
-    <view class="bottom p-10" v-if="!otherPerson">
+    <view class="bottom p-10" v-if="type === 'myself'">
       <u-button text="保存修改" type="primary" size="large"></u-button>
     </view>
-    <view class="bottom p-10" v-else>
+    <view class="bottom p-10" v-if="type === 'other'">
       <u-button text="发送好友申请" type="primary" size="large"></u-button>
+    </view>
+    <view class="bottom p-10" v-if="type === 'del'" @click="del">
+      <u-button text="删除好友" type="error" size="large"></u-button>
+    </view>
+    <view class="bottom p-10" v-if="type === 'relation'" @click="relation">
+      <u-button text="发送消息" type="primary" size="large"></u-button>
     </view>
   </view>
 </template>
 
 <script>
+import { delFriend } from '@/api/user.js'
+import { successToast } from '../../components/toast/index.js'
 export default {
   data() {
     return {
-      otherPerson: false,
+      type: 'mySelf',
+      uuid: '',
       initData: {
         imgUrl: require('static/logo.png'),
         username: '爸爸',
@@ -123,21 +133,54 @@ export default {
           major: '信管',
           school: '湘潭大学',
           well: '打球',
-          details: 'xxxxx',
-        },
-      },
+          details: 'xxxxx'
+        }
+      }
+    }
+  },
+  computed: {
+    otherPerson() {
+      return this.type !== 'mySelf'
     }
   },
   onLoad(options) {
-    if (options.type === 'other') {
-      this.otherPerson = true
+    this.type = options.type
+    this.uuid = options.id
+  },
+  onReady() {
+    if (
+      this.type === 'other' ||
+      this.type === 'del' ||
+      this.type === 'relation'
+    ) {
       uni.setNavigationBarTitle({
-        title: 'xxx',
+        title: 'xxx'
       })
     }
   },
 
-  methods: {},
+  methods: {
+    relation() {
+      this.$methods.chat.enterChat(this.uuid, 'private', this)
+    },
+    del() {
+      let imService = getApp().globalData.imService
+      delFriend(imService.currentUser.uuid, { friend: this.uuid }).then(() => {
+        imService.friends = imService.friends.filter(item => {
+          return item.uuid != this.uuid
+        })
+        successToast('删除成功！')
+        uni.switchTab({
+          url: '/pages/teammate/index',
+          success() {
+            let page = getCurrentPages().pop() //当前页面
+            if (page == undefined || page == null) return
+            page.onLoad() //或者其它操作
+          }
+        })
+      })
+    }
+  }
 }
 </script>
 

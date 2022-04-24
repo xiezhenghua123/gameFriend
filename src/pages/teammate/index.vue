@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:38
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 18:50:12
+ * @LastEditTime: 2022-04-24 19:21:56
 -->
 <template>
   <view>
@@ -49,7 +49,7 @@
           v-for="item in findData"
           :item="item"
           :key="item.id"
-          @click.native="clickToDetails(item)"
+          @click.native="clickToDetails(item.id)"
         ></game-template>
         <u-loadmore
           :status="status"
@@ -121,9 +121,9 @@ export default {
         url: `/pages/my-information/index?type=other&publisher=${publisher}`
       })
     },
-    clickToDetails(item) {
+    clickToDetails(id) {
       uni.navigateTo({
-        url: `/pages/game-details/index?data=${JSON.stringify(item)}`
+        url: `/pages/game-details/index?id=${id}`
       })
     },
     loadmore() {

@@ -1,6 +1,10 @@
 <template>
   <scroll-view class="conversations" scroll-y="true">
-    <view v-if="conversations.length != 0">
+    <view v-if="conversations.length != 0 || friendNoticeTotal != 0">
+      <view class="notice-item" v-if="friendNoticeTotal" @click="toNotice">
+        添加好友通知
+        <view class="number">{{ friendNoticeTotal }}</view>
+      </view>
       <view
         class="scroll-item"
         v-for="(conversation, key) in conversations"
@@ -49,11 +53,6 @@
                 v-else-if="conversation.lastMessage.type == 'file'"
                 >[文件消息]</view
               >
-              <!-- <view
-                class="item-info-top_content"
-                v-else-if="conversation.lastMessage.type == 'order'"
-                >[自定义消息:订单]</view
-              > -->
               <view class="item-info-top_content" v-else>[[未识别内容]]</view>
               <view
                 class="item-info-bottom_action"
@@ -79,60 +78,68 @@
 
 <script>
 import IMService from '@/goEasy/lib/imservice'
+import { friendsNotice } from '@/api/user.js'
+import { mapState } from 'vuex'
 export default {
   name: 'contacts',
   data() {
     return {
       unreadTotal: 0,
+      friendNoticeTotal: 0,
+      friendNotice: [],
       conversations: [],
       action: {
         conversation: null,
-        show: false,
-      },
+        show: false
+      }
     }
   },
+  computed: {
+    ...mapState('appState', ['userInfo'])
+  },
   mounted() {
-    // let currentUser = uni.getStorageSync('currentUser')
-    // // if (!currentUser) {
-    // //   uni.navigateTo({
-    // //     url: '../login/login',
-    // //   })
-    // //   return
-    // // }
-    // if (this.goEasy.getConnectionStatus() === 'disconnected') {
-    //   getApp().globalData.imService = new IMService(this.goEasy, this.GoEasy)
-    //   getApp().globalData.imService.connect(currentUser)
-    // }
-    // uni.showLoading()
-    // //监听会话列表变化
+    this.getAddFriendsMessage()
     let self = this
-    // this.goEasy.im.on(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, content => {
-    //   self.renderConversations(content)
-    // })
     //加载会话列表
     this.goEasy.im.latestConversations({
       onSuccess: function (result) {
-        let content = result.content
+        let friends = getApp().globalData.imService.friends
+        let content = result.content.filter(item => {
+          return friends.some(i => {
+            return item.userId == i.uuid
+          })
+        })
+        console.log(content)
         self.renderConversations(content)
-        // uni.hideLoading()
       },
       onFailed: function (error) {
         //获取失败
-        // uni.hideLoading()
         console.log(
           '失败获取最新会话列表, code:' +
             error.code +
             ' content:' +
             error.content
         )
-      },
+      }
     })
   },
   methods: {
+    toNotice() {
+      uni.navigateTo({
+        url: `/pages/chat/addFrendsNotice/index?data=${JSON.stringify(
+          this.friendNotice
+        )}`
+      })
+    },
+    async getAddFriendsMessage() {
+      const { data } = await friendsNotice(this.userInfo.uuid)
+      this.friendNotice = data
+      this.friendNoticeTotal = data.length
+    },
     topConversation() {
       uni.showLoading({
         title: '加载中...',
-        mask: true,
+        mask: true
       })
       let conversation = this.action.conversation
       let failedDescription = conversation.top ? '取消置顶失败' : '置顶失败'
@@ -148,10 +155,10 @@ export default {
             uni.hideLoading()
             uni.showToast({
               title: failedDescription,
-              icon: 'none',
+              icon: 'none'
             })
             console.log(error)
-          },
+          }
         })
       } else {
         this.goEasy.im.topGroupConversation({
@@ -164,17 +171,17 @@ export default {
             uni.hideLoading()
             uni.showToast({
               title: failedDescription,
-              icon: 'none',
+              icon: 'none'
             })
             console.log(error)
-          },
+          }
         })
       }
     },
     removeConversation() {
       uni.showLoading({
         title: '加载中...',
-        mask: true,
+        mask: true
       })
       let failedDescription = '删除失败'
       let conversation = this.action.conversation
@@ -189,10 +196,10 @@ export default {
             uni.hideLoading()
             uni.showToast({
               title: failedDescription,
-              icon: 'none',
+              icon: 'none'
             })
             console.log(error)
-          },
+          }
         })
       } else {
         this.goEasy.im.removeGroupConversation({
@@ -204,10 +211,10 @@ export default {
             uni.hideLoading()
             uni.showToast({
               title: failedDescription,
-              icon: 'none',
+              icon: 'none'
             })
             console.log(error)
-          },
+          }
         })
       }
     },
@@ -217,38 +224,58 @@ export default {
       this.setUnreadAmount(unreadTotal)
     },
     setUnreadAmount(unreadTotal) {
-      this.unreadTotal = unreadTotal
+      this.unreadTotal = unreadTotal + this.friendNoticeTotal
       if (this.unreadTotal > 0) {
         uni.setTabBarBadge({
-          index: 2,
-          text: this.unreadTotal.toString(),
+          index: 3,
+          text: this.unreadTotal.toString()
         })
       } else {
         uni.removeTabBarBadge({
-          index: 2,
+          index: 3
         })
       }
     },
     navigateToChat(conversation) {
       let path =
         conversation.type === this.GoEasy.IM_SCENE.PRIVATE
-          ? '../chat/privateChat/privateChat?to=' + conversation.userId
-          : '../chat/groupChat/groupChat?to=' + conversation.groupId
+          ? '../chat/privateChat/privateChat?id=' + conversation.userId
+          : '../chat/groupChat/groupChat?id=' + conversation.groupId
       uni.navigateTo({
-        url: path,
+        url: path
       })
     },
     showAction(conversation) {
       this.action.conversation = conversation
       this.action.show = true
-    },
-  },
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 page {
   height: 100%;
+}
+.notice-item {
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  padding-left: 64rpx;
+  justify-content: space-between;
+  border-bottom: 1px solid #efefef;
+  .number {
+    padding: 6rpx;
+    background-color: #ee593c;
+    color: #ffffff;
+    font-size: 24rpx;
+    line-height: 28rpx;
+    border-radius: 24rpx;
+    min-width: 24rpx;
+    min-height: 24rpx;
+    text-align: center;
+    margin-right: 40rpx;
+  }
 }
 .conversations {
   width: 750rpx;
@@ -263,6 +290,7 @@ page {
   display: flex;
   align-items: center;
   padding-left: 32rpx;
+  border-bottom: 1px solid #efefef;
 }
 .conversations .scroll-item .head-icon {
   width: 100rpx;
@@ -274,7 +302,6 @@ page {
   width: 590rpx;
   padding-right: 32rpx;
   box-sizing: border-box;
-  border-bottom: 1px solid #efefef;
 }
 .conversations .scroll-item_info .item-info-top {
   padding-top: 20rpx;

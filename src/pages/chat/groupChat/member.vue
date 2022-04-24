@@ -4,12 +4,17 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-07 17:14:52
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 00:57:28
+ * @LastEditTime: 2022-04-25 00:07:58
 -->
 <template>
   <view>
     <view class="group-member">
-      <view class="member" v-for="(member, key) in users" :key="key">
+      <view
+        class="member"
+        v-for="(member, key) in users"
+        :key="key"
+        @click="clickToDetils(member.uuid)"
+      >
         <image :src="member.avatar" class="group-member__item"> </image>
         <text> {{ member.name }}</text>
       </view>
@@ -54,6 +59,16 @@ export default {
     })
   },
   methods: {
+    clickToDetils(id) {
+      let isFriend = getApp().globalData.imService.friends.some(item => {
+        return item.uuid == id
+      })
+      uni.navigateTo({
+        url: `/pages/my-information/index?id=${id}&type=${
+          isFriend ? 'relation' : 'other'
+        }`
+      })
+    },
     removeGroup() {
       const that = this
       uni.showModal({
@@ -62,6 +77,10 @@ export default {
           if (res.confirm) {
             delGroup(that.userInfo.uuid, getApp().globalData.group.uuid).then(
               data => {
+                let imService = getApp().globalData.imService
+                imService.groups = imService.groups.filter(item => {
+                  return item.uuid != getApp().globalData.group.uuid
+                })
                 uni.switchTab({
                   url: '/pages/message/index',
                   success() {

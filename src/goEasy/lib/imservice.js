@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-05 19:28:12
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-22 22:40:33
+ * @LastEditTime: 2022-04-24 22:58:50
  */
 // import restApi from './restapi'
 function Friend(uuid, name, avatar) {
@@ -103,8 +103,8 @@ IMService.prototype.findGroupById = function (groupId) {
 
 IMService.prototype.findFriendById = function (userId) {
   let user = this.friends.filter(friend => {
-    return friend.id.toString() === userId.toString()
-  })
+    return friend.uuid == userId
+  })[0]
   return new Friend(user.uuid, user.name, user.avatar)
 }
 

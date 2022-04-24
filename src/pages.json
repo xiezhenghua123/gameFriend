@@ -107,6 +107,12 @@
       "style": {
         "navigationBarTitleText": "邀请新成员"
       }
+    },
+    {
+      "path": "pages/chat/addFrendsNotice/index",
+      "style": {
+        "navigationBarTitleText": "添加好友通知"
+      }
     }
   ],
   "tabBar": {

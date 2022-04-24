@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-23 14:52:35
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 18:25:50
+ * @LastEditTime: 2022-04-24 18:59:51
  */
 import request from './request/index'
 
@@ -41,4 +41,23 @@ const getInvitationList = page => {
   )
 }
 
-export { addInvitation, editInvitation, getInvitationList, delInvitation }
+const getInvitationDetails = id => {
+  return request(
+    'get',
+    '/posts/:id',
+    {},
+    {
+      params: {
+        id: id
+      }
+    }
+  )
+}
+
+export {
+  addInvitation,
+  editInvitation,
+  getInvitationList,
+  delInvitation,
+  getInvitationDetails
+}
