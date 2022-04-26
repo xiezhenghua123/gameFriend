@@ -4,14 +4,14 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-23 15:13:24
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 15:24:12
+ * @LastEditTime: 2022-04-25 19:21:18
  */
-import request from './common.js'
+import request from './request/index.js'
 
 const getInvitationComment = id => {
-  request(
+  return request(
     'get',
-    'post/:id/comment',
+    'posts/:id/comment',
     {},
     {
       params: {
@@ -22,7 +22,7 @@ const getInvitationComment = id => {
 }
 
 const replyComment = (id, data) => {
-  request('post', 'post/comment/:id/reply', data, {
+  return request('post', 'posts/comment/:id/reply', data, {
     params: {
       id: id
     }
@@ -30,15 +30,20 @@ const replyComment = (id, data) => {
 }
 
 const delReply = id => {
-  request('delete', 'post/comment/:id/reply', data, {
-    params: {
-      id: id
+  return request(
+    'delete',
+    'posts/comment/:id/reply',
+    {},
+    {
+      params: {
+        id: id
+      }
     }
-  })
+  )
 }
 
 const releaseComment = (id, data) => {
-  request('post', 'post/:id/comment', data, {
+  return request('post', 'posts/:id/comment', data, {
     params: {
       id: id
     }
@@ -46,9 +51,9 @@ const releaseComment = (id, data) => {
 }
 
 const delComment = id => {
-  request(
+  return request(
     'delete',
-    'post/comment/:id',
+    'posts/comment/:id',
     {},
     {
       params: {

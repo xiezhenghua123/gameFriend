@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 20:59:08
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 17:48:02
+ * @LastEditTime: 2022-04-25 18:49:06
  */
 body {
   font-size: $uni-font-size-base;
@@ -54,6 +54,11 @@ body {
 .flex {
   display: flex;
   align-items: center;
+}
+.flex-column {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 .height_100 {
   height: 100%;

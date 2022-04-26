@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 15:28:59
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-25 00:09:10
+ * @LastEditTime: 2022-04-25 10:43:31
 -->
 
 <template>
@@ -98,7 +98,7 @@
         </view>
       </u-form>
     </view>
-    <view class="bottom p-10" v-if="type === 'myself'">
+    <view class="bottom p-10" v-if="type === 'mySelf'">
       <u-button text="保存修改" type="primary" size="large"></u-button>
     </view>
     <view class="bottom p-10" v-if="type === 'other'">
@@ -171,7 +171,7 @@ export default {
         })
         successToast('删除成功！')
         uni.switchTab({
-          url: '/pages/teammate/index',
+          url: '/pages/message/index',
           success() {
             let page = getCurrentPages().pop() //当前页面
             if (page == undefined || page == null) return

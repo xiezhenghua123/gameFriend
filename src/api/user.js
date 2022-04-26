@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-21 15:55:12
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-24 23:24:07
+ * @LastEditTime: 2022-04-26 10:13:59
  */
 import request from './request'
 
@@ -144,6 +144,10 @@ const delFriend = (uid, data) => {
   })
 }
 
+const confirmPhone = data => {
+  return request('post', 'authenticate', data)
+}
+
 export {
   login,
   getFriendsList,
@@ -157,5 +161,6 @@ export {
   addFriend,
   friendsNotice,
   addFriendConfirm,
-  delFriend
+  delFriend,
+  confirmPhone
 }

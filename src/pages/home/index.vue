@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:47
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 16:20:37
+ * @LastEditTime: 2022-04-25 10:36:47
 -->
 <template>
   <view class="content">
@@ -64,9 +64,15 @@ export default {
   },
   methods: {
     clickFeature(key) {
-      uni.navigateTo({
-        url: `/pages/${key}/index`
-      })
+      if (key === 'my-information') {
+        uni.navigateTo({
+          url: `/pages/${key}/index?type=mySelf`
+        })
+      } else {
+        uni.navigateTo({
+          url: `/pages/${key}/index`
+        })
+      }
     },
     uploadAvatar() {
       uni.chooseImage({

@@ -4,35 +4,76 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 19:20:27
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-04 19:38:14
+ * @LastEditTime: 2022-04-26 21:01:01
 -->
 <template>
-  <view class="box">
+  <view class="box comment-box">
     <view class="m-10">
-      <view class="top">
-        <view class="person">
-          <u-avatar :src="initData.avatarUrl" size="50"></u-avatar>
-          <view class="name ml-10">{{ initData.username }}</view>
+      <view class="comment">
+        <view class="top">
+          <view class="person">
+            <u-avatar :src="initData.fromAvatar" size="50"></u-avatar>
+            <view class="name ml-10">{{ initData.fromName }}</view>
+          </view>
+          <view class="position">{{ '--' + (position + 1) + '楼--' }}</view>
+          <view class="ml-10">
+            <slot name="del"></slot>
+          </view>
         </view>
-        <view class="position">{{ '--' + initData.position + '楼--' }}</view>
+        <view class="content mt-10">{{ initData.content }}</view>
+        <view class="time mt-10 mb-10">评论于{{ initData.time }}</view>
       </view>
-      <view class="content mt-10">{{ initData.content }}</view>
-      <view class="time mt-10">{{ initData.time }}</view>
+      <view class="replay" v-if="initData.reply.length">
+        <view
+          class="flex"
+          style="justify-content: space-between"
+          v-for="(item, index) in initData.reply"
+          :key="index"
+        >
+          <view class="flex">
+            <view class="name mr-10">{{ item.fromName }}</view>
+            <u-avatar :src="item.fromAvatar" size="20"></u-avatar>
+            <view> ：{{ item.content }} </view>
+          </view>
+          <view v-if="userInfo.uuid == item.fromId">
+            <u-button
+              type="error"
+              size="mini"
+              text="删除"
+              @click="delReply(item.id)"
+            ></u-button>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 </template>
 <script>
+// import { delReply } from '@/api/comment.js'
+import { mapState } from 'vuex'
+// import { successToast } from '@/components/toast/index.js'
 export default {
   name: 'comment-template',
   props: {
     initData: {
       type: Object,
-      require: true,
+      require: true
     },
+    position: {
+      type: Number
+    }
   },
   data() {
     return {}
   },
+  computed: {
+    ...mapState('appState', ['userInfo'])
+  },
+  methods: {
+    delReply(id) {
+      this.$emit('delReply', id)
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -53,5 +94,10 @@ export default {
 }
 .box {
   border-bottom: 2px solid rgba(66, 61, 61, 0.3);
+}
+.replay {
+  background-color: #efefef;
+  padding: 10rpx;
+  border-radius: 5px;
 }
 </style>

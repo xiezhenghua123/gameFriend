@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 17:10:08
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-23 15:10:23
+ * @LastEditTime: 2022-04-26 10:40:03
  */
 
 import { apiRoot } from '../requestUrl/index.js'
@@ -36,9 +36,14 @@ const requestInterceptors = config => {
 }
 
 const responseInterceptors = response => {
-  if (response.data.code !== 0) {
+  // 需要检查code的接口
+  const repx = /\/login/
+  if (repx.test(response.config.url)) {
+    return response.data
+  }
+  if (response.data.code != 0) {
     errorToast(response.data.status)
-    return
+    return Promise.reject(response.data.status)
   }
   return response.data
 }

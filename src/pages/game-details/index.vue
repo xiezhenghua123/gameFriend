@@ -4,11 +4,11 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 17:05:11
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-24 20:17:44
+ * @LastEditTime: 2022-04-26 21:04:03
 -->
 <template>
   <view style="margin-bottom: 120rpx">
-    <u-toast ref="uToast"></u-toast>
+    <u-toast ref="uToast" style="z-index: 999"></u-toast>
     <view class="top-box m-10">
       <view class="person">
         <u-avatar :src="initData.avatar" size="50"></u-avatar>
@@ -33,7 +33,12 @@
         </view>
       </view>
     </view>
-    <u-modal :show="editShow" title="编辑帖子" :showConfirmButton="fasle">
+    <u-modal
+      :show="editShow"
+      title="编辑帖子"
+      :showConfirmButton="fasle"
+      closeOnClickOverlay
+    >
       <releaseTemplate
         :initData="initData"
         @getData="edit"
@@ -41,6 +46,7 @@
         type="edit"
       ></releaseTemplate>
     </u-modal>
+
     <view class="content-box">
       <view class="game m-10">
         <img :src="initData.img" alt="" class="game-img" />
@@ -55,8 +61,43 @@
     </view>
     <view class="comment-box">
       <view class="title pl-10">赛友热评</view>
-      <view v-for="item in comments" :key="item.position">
-        <comment-template :initData="item"></comment-template>
+      <u-modal
+        :show="replyShow"
+        :title="'回复' + replyContianer.name"
+        showCancelButton
+        confirmText="回复"
+        closeOnClickOverlay
+        @confirm="replyConfirm"
+        @cancel="replyShow = false"
+      >
+        <u-input v-model="content" border="surround"></u-input>
+      </u-modal>
+      <view v-for="(item, index) in comments" :key="index">
+        <comment-template
+          :initData="item"
+          :position="index"
+          @delReply="delReply"
+        >
+          <template #del>
+            <view class="flex">
+              <u-button
+                type="primary"
+                text="回复"
+                size="mini"
+                @click="reply(item.fromName, item.id, item.fromId, item.toId)"
+              ></u-button>
+              <view class="ml-10" v-if="userInfo.uuid == item.toId">
+                <u-button
+                  type="error"
+                  text="删除"
+                  size="mini"
+                  @click="delComment(item.id)"
+                >
+                </u-button>
+              </view>
+            </view>
+          </template>
+        </comment-template>
       </view>
       <view class="answer m-10">
         <u-input
@@ -66,8 +107,8 @@
           class="answer-input"
           holdKeyboard
         ></u-input>
-        <view class="answer-btn">
-          <u-button text="回复" type="primary"></u-button>
+        <view class="answer-btn ml-10">
+          <u-button text="评论" type="primary" @click="comment"></u-button>
         </view>
       </view>
     </view>
@@ -75,6 +116,13 @@
 </template>
 <script>
 import { getInvitationDetails, editInvitation } from '@/api/Invitation.js'
+import {
+  getInvitationComment,
+  replyComment,
+  delComment,
+  releaseComment,
+  delReply
+} from '@/api/comment.js'
 import { mapState } from 'vuex'
 import releaseTemplate from '../release/release-template/index.vue'
 
@@ -84,31 +132,28 @@ export default {
   },
   data() {
     return {
+      replyShow: false,
       editShow: false,
       answerData: '',
       favorite: false,
-      comments: [
-        {
-          position: 1,
-          avatarUrl: require('static/logo.png'),
-          username: '张三',
-          time: '2020-06-17 16:42:41',
-          content: '测试评论'
-        },
-        {
-          position: 2,
-          avatarUrl: require('static/logo.png'),
-          username: '张三',
-          time: '2020-06-17 16:42:41',
-          content: '测试评论'
-        }
-      ],
-      initData: {}
+      comments: [],
+      initData: {},
+      id: '',
+      replyContianer: {
+        name: '',
+        fromId: '',
+        id: '',
+        toId: ''
+      },
+      content: ''
     }
   },
-  async onLoad({ id }) {
-    const { data } = await getInvitationDetails(id)
-    this.initData = data
+  onLoad({ id }) {
+    this.id = id
+    getInvitationDetails(id).then(({ data }) => {
+      this.initData = data
+    })
+    this.getComments()
   },
   computed: {
     ...mapState('appState', ['userInfo']),
@@ -117,6 +162,78 @@ export default {
     }
   },
   methods: {
+    delReply(id) {
+      console.log(id)
+      delReply(id).then(() => {
+        this.$refs.uToast.show({
+          message: '删除回复成功！',
+          type: 'success'
+        })
+        this.getComments()
+      })
+    },
+    replyConfirm() {
+      if (this.content == '') {
+        this.$refs.uToast.show({
+          message: '请输入内容',
+          type: 'error'
+        })
+        return
+      }
+      replyComment(this.replyContianer.id, {
+        fromId: this.replyContianer.fromId,
+        toId: this.replyContianer.toId,
+        content: this.content
+      }).then(() => {
+        this.$refs.uToast.show({
+          message: '回复评论成功',
+          type: 'success'
+        })
+        this.getComments()
+        this.replyShow = false
+      })
+    },
+    reply(name, id, fromId, toId) {
+      this.replyShow = true
+      this.content = ''
+      this.replyContianer.name = name
+      this.replyContianer.id = id
+      this.replyContianer.fromId = fromId
+      this.replyContianer.toId = toId
+    },
+    delComment(id) {
+      delComment(id).then(() => {
+        this.$refs.uToast.show({
+          message: '删除评论成功',
+          type: 'success'
+        })
+        this.getComments()
+      })
+    },
+    getComments() {
+      getInvitationComment(this.id).then(({ data }) => {
+        this.comments = data.list
+      })
+    },
+    comment() {
+      if (this.answerData == '') {
+        this.$refs.uToast.show({
+          message: '请输入内容',
+          type: 'error'
+        })
+        return
+      }
+      releaseComment(this.id, {
+        fromId: this.userInfo.uuid,
+        content: this.answerData
+      }).then(({ data }) => {
+        this.$refs.uToast.show({
+          message: '评论成功',
+          type: 'success'
+        })
+        this.getComments()
+      })
+    },
     timeFormat(time) {
       return time.replace(/T/g, ' ').replace(/\.[\d]{6}Z/g, '')
     },

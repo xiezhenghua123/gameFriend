@@ -103,17 +103,12 @@ export default {
     //加载会话列表
     this.goEasy.im.latestConversations({
       onSuccess: function (result) {
-        let friends = getApp().globalData.imService.friends
-        let content = result.content.filter(item => {
-          return friends.some(i => {
-            return item.userId == i.uuid
-          })
-        })
-        console.log(content)
+        let content = result.content
         self.renderConversations(content)
       },
       onFailed: function (error) {
         //获取失败
+        console.log(error)
         console.log(
           '失败获取最新会话列表, code:' +
             error.code +
@@ -219,7 +214,13 @@ export default {
       }
     },
     renderConversations(content) {
-      this.conversations = content.conversations || []
+      let friends = getApp().globalData.imService.friends
+      this.conversations =
+        content.conversations.filter(item => {
+          return friends.some(i => {
+            return item.userId == i.uuid
+          })
+        }) || []
       let unreadTotal = content.unreadTotal
       this.setUnreadAmount(unreadTotal)
     },

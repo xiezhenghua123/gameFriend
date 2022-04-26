@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-08 16:27:20
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-24 20:41:41
+ * @LastEditTime: 2022-04-25 11:01:09
 -->
 <template>
   <view class="m-10">
@@ -40,11 +40,12 @@
         </view>
       </view>
     </view>
+    <view v-else style="text-align: center"> 无搜索用户 </view>
   </view>
 </template>
 <script>
 import { findPerson, addFriend } from '@/api/user.js'
-import { successToast } from '@/components/toast/index.js'
+import { successToast, errorToast } from '@/components/toast/index.js'
 import { mapState } from 'vuex'
 export default {
   data() {
@@ -63,14 +64,22 @@ export default {
       })
     },
     find() {
+      if (!this.tel) {
+        errorToast('请输入电话号码再查询！')
+        return
+      }
       findPerson(this.tel).then(({ data }) => {
         this.person = data
       })
     },
     add(id) {
+      if (id == this.userInfo.uuid) {
+        errorToast('不能添加自己！')
+        return
+      }
       addFriend(this.userInfo.uuid, {
         friend: id
-      }).then(() => {
+      }).then(data => {
         successToast('添加好友通知已发送！')
       })
     }

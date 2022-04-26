@@ -4,16 +4,16 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 20:42:00
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-25 00:09:46
+ * @LastEditTime: 2022-04-26 21:08:06
 -->
 <template>
   <view>
     <view class="confirm-button" :style="{ 'margin-top': marT + 'rpx' }">
-      <u-button size="large" type="primary" @click="show = true">
+      <u-button size="large" type="primary" @click="confirm">
         点击登录
       </u-button>
       <u-modal :show="show" title="填写手机号" :showConfirmButton="false">
-        <u--form :model="form" ref="uForm" :rules="rules">
+        <u--form :model="form" ref="uForm" :rules="rules" labelWidth="auto">
           <u-form-item label="手机号:" prop="phone" required>
             <u--input
               placeholder="请输入手机号"
@@ -22,7 +22,11 @@
             ></u--input>
           </u-form-item>
           <u-form-item>
-            <u-button type="primary" text="提交" @click="confirm"></u-button>
+            <u-button
+              type="primary"
+              text="提交"
+              @click="confirmPhone"
+            ></u-button>
           </u-form-item>
         </u--form>
       </u-modal>
@@ -34,7 +38,7 @@
 import { mapActions } from 'vuex'
 import restApi from '@/goEasy/lib/restapi'
 import renderConversations from '@/pages/minix/renderConversations'
-import { login } from '@/api/user.js'
+import { login, confirmPhone } from '@/api/user.js'
 
 export default {
   name: 'confirm',
@@ -54,6 +58,7 @@ export default {
   data() {
     return {
       show: false,
+      userInfo: {},
       form: {
         phone: ''
       },
@@ -90,46 +95,58 @@ export default {
         })
       })
     },
+    confirmPhone() {
+      this.$refs.uForm.validate().then(vaild => {
+        if (vaild) {
+          confirmPhone({
+            openid: this.userInfo.uuid,
+            phone: this.form.phone
+          }).then(() => {
+            this.remember({ ...this.userInfo, phone: this.form.phone })
+            this.show = false
+          })
+        }
+      })
+    },
+    //记录登陆状态
+    remember(userInfo) {
+      this.setLogin(true)
+      this.$emit('isLogin', true)
+      this.setUserInfo(userInfo)
+      this.$methods.chat.connect(this, userInfo)
+      this.goEasy.im.on(that.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, content => {
+        this.renderConversations(content)
+      })
+    },
     confirm() {
       const that = this
-      this.$refs.uForm.validate().then(vaild => {
-        console.log(vaild)
-        if (vaild) {
-          this.show = false
-          wx.getUserProfile({
-            desc: '获取头像',
-            success({ userInfo }) {
-              that.login().then(code => {
-                login({
-                  js_code: code,
-                  name: userInfo.nickName,
-                  avatar: userInfo.avatarUrl,
-                  phone: that.form.phone
-                }).then(({ data }) => {
-                  that.setLogin(true)
-                  that.$emit('isLogin', true)
-                  const userInfo = {
-                    name: data.name,
-                    avatar: data.avatar,
-                    uuid: data.openid,
-                    phone: that.form.phone
-                  }
-                  // uni.setStorageSync('currentUser', userInfo)
-                  that.setUserInfo(userInfo)
-                  that.$methods.chat.connect(that, userInfo)
-                  that.goEasy.im.on(
-                    that.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED,
-                    content => {
-                      that.renderConversations(content)
-                    }
-                  )
+      wx.getUserProfile({
+        desc: '获取头像',
+        success({ userInfo }) {
+          that.login().then(code => {
+            login({
+              js_code: code,
+              name: userInfo.nickName,
+              avatar: userInfo.avatarUrl
+            }).then(data => {
+              that.$set(that.userInfo, 'name', data.data.name)
+              that.$set(that.userInfo, 'avatar', data.data.avatar)
+              that.$set(that.userInfo, 'uuid', data.data.openid)
+              if (data.code == 0) {
+                that.remember({
+                  name: data.data.name,
+                  avatar: data.data.avatar,
+                  phone: data.data.phone,
+                  uuid: data.data.openid
                 })
-              })
-            },
-            fail(res) {
-              console.log(res)
-            }
+              } else {
+                that.show = true
+              }
+            })
           })
+        },
+        fail(res) {
+          console.log(res)
         }
       })
     }
