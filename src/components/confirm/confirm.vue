@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 20:42:00
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-26 21:08:06
+ * @LastEditTime: 2022-04-30 19:00:59
 -->
 <template>
   <view>
@@ -109,10 +109,10 @@ export default {
       })
     },
     //记录登陆状态
-    remember(userInfo) {
+    async remember(userInfo) {
       this.setLogin(true)
+      await this.setUserInfo(userInfo)
       this.$emit('isLogin', true)
-      this.setUserInfo(userInfo)
       this.$methods.chat.connect(this, userInfo)
       this.goEasy.im.on(that.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, content => {
         this.renderConversations(content)

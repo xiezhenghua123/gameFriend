@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-23 14:52:35
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-24 18:59:51
+ * @LastEditTime: 2022-04-30 19:34:00
  */
 import request from './request/index'
 
@@ -28,7 +28,7 @@ const delInvitation = (id, data) => {
   })
 }
 
-const getInvitationList = page => {
+const getInvitationList = (page, uuid) => {
   return request(
     'get',
     'posts/list/:page',
@@ -36,6 +36,9 @@ const getInvitationList = page => {
     {
       params: {
         page: page
+      },
+      query: {
+        uid: uuid
       }
     }
   )
@@ -54,10 +57,29 @@ const getInvitationDetails = id => {
   )
 }
 
+const collect = data => {
+  return request('post', 'collection/post', data)
+}
+
+const cancelCollect = (pid, uuid) => {
+  return request(
+    'delete',
+    'collection/resume/:id',
+    { postId: pid },
+    {
+      params: {
+        id: uuid
+      }
+    }
+  )
+}
+
 export {
   addInvitation,
   editInvitation,
   getInvitationList,
   delInvitation,
-  getInvitationDetails
+  getInvitationDetails,
+  collect,
+  cancelCollect
 }

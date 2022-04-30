@@ -103,7 +103,7 @@ export default {
     afterRead(file, lists, name) {
       const that = this
       uni.uploadFile({
-        url: 'http://gamefriend.jsky31.cn/api/image',
+        url: 'https://gamefriend.jsky31.cn/api/image',
         filePath: file.file.url,
         name: 'image',
         header: {

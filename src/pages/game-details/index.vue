@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 17:05:11
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-26 21:04:03
+ * @LastEditTime: 2022-04-30 19:47:48
 -->
 <template>
   <view style="margin-bottom: 120rpx">
@@ -18,7 +18,7 @@
         <view class="collect mr-10">
           <view @click="clickIcon"
             ><u-icon
-              :name="favorite ? 'star-fill' : 'star'"
+              :name="isCollection == '1' ? 'star-fill' : 'star'"
               size="22"
               color="#ff9900"
             ></u-icon
@@ -72,32 +72,37 @@
       >
         <u-input v-model="content" border="surround"></u-input>
       </u-modal>
-      <view v-for="(item, index) in comments" :key="index">
-        <comment-template
-          :initData="item"
-          :position="index"
-          @delReply="delReply"
-        >
-          <template #del>
-            <view class="flex">
-              <u-button
-                type="primary"
-                text="回复"
-                size="mini"
-                @click="reply(item.fromName, item.id, item.fromId, item.toId)"
-              ></u-button>
-              <view class="ml-10" v-if="userInfo.uuid == item.toId">
+      <view v-if="comments.length">
+        <view v-for="(item, index) in comments" :key="index">
+          <comment-template
+            :initData="item"
+            :position="index"
+            @delReply="delReply"
+          >
+            <template #del>
+              <view class="flex">
                 <u-button
-                  type="error"
-                  text="删除"
+                  type="primary"
+                  text="回复"
                   size="mini"
-                  @click="delComment(item.id)"
-                >
-                </u-button>
+                  @click="reply(item.fromName, item.id, item.fromId, item.toId)"
+                ></u-button>
+                <view class="ml-10" v-if="userInfo.uuid == item.toId">
+                  <u-button
+                    type="error"
+                    text="删除"
+                    size="mini"
+                    @click="delComment(item.id)"
+                  >
+                  </u-button>
+                </view>
               </view>
-            </view>
-          </template>
-        </comment-template>
+            </template>
+          </comment-template>
+        </view>
+      </view>
+      <view v-else>
+        <u-empty></u-empty>
       </view>
       <view class="answer m-10">
         <u-input
@@ -115,7 +120,12 @@
   </view>
 </template>
 <script>
-import { getInvitationDetails, editInvitation } from '@/api/Invitation.js'
+import {
+  getInvitationDetails,
+  editInvitation,
+  collect,
+  cancelCollect
+} from '@/api/Invitation.js'
 import {
   getInvitationComment,
   replyComment,
@@ -145,10 +155,12 @@ export default {
         id: '',
         toId: ''
       },
-      content: ''
+      content: '',
+      isCollection: '0'
     }
   },
-  onLoad({ id }) {
+  onLoad({ id, isCollection }) {
+    this.isCollection = isCollection
     this.id = id
     getInvitationDetails(id).then(({ data }) => {
       this.initData = data
@@ -249,16 +261,21 @@ export default {
       })
     },
     clickIcon() {
-      this.favorite = !this.favorite
-      if (this.favorite) {
-        this.$refs.uToast.show({
-          message: '收藏成功！',
-          type: 'success'
+      if (this.isCollection == '0') {
+        collect({ postId: this.id, uid: this.userInfo.uuid }).then(() => {
+          this.isCollection = '1'
+          this.$refs.uToast.show({
+            message: '收藏成功！',
+            type: 'success'
+          })
         })
       } else {
-        this.$refs.uToast.show({
-          message: '取消收藏成功！',
-          type: 'success'
+        cancelCollect(this.id, this.userInfo.uuid).then(() => {
+          this.isCollection = '0'
+          this.$refs.uToast.show({
+            message: '取消收藏成功！',
+            type: 'success'
+          })
         })
       }
     }

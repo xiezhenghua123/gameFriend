@@ -70,6 +70,12 @@
       }
     },
     {
+      "path": "pages/index/details/index",
+      "style": {
+        "navigationBarTitleText": "赛事详情"
+      }
+    },
+    {
       "path": "pages/chat/groupChat/groupChat",
       "style": {
         "navigationBarTitleText": "群聊",

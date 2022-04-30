@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-03-11 22:35:51
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-02 12:10:34
+ * @LastEditTime: 2022-04-30 11:44:17
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -24,11 +24,11 @@ let store = new Vuex.Store({
       storage: {
         getItem: key => uni.getStorageSync(key),
         setItem: (key, value) => uni.setStorageSync(key, value),
-        removeItem: key => uni.removeStorageSync(key),
+        removeItem: key => uni.removeStorageSync(key)
       },
-      path: ['appState'],
-    }),
-  ],
+      paths: ['appState']
+    })
+  ]
 })
 
 if (module.hot) {
@@ -36,7 +36,7 @@ if (module.hot) {
     store.hotUpdate({
       actions: require('./actions'),
       getters: require('./getters'),
-      modules: require('./modules'),
+      modules: require('./modules')
     })
   })
 }

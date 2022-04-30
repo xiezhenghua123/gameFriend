@@ -4,13 +4,18 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-03-11 22:35:51
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-22 18:10:07
+ * @LastEditTime: 2022-04-30 19:09:04
 -->
 <template>
   <view>
     <toast></toast>
     <view v-if="isLogin" class="box">
-      <view v-for="item in gameListFormter" :key="item.id" class="content p-10">
+      <view
+        v-for="item in gameListFormter"
+        :key="item.id"
+        class="content p-10"
+        @click="clickToDetails(item)"
+      >
         <img :src="item.img" alt="" class="img" />
         <view class="title">
           {{ item.name }}
@@ -76,6 +81,11 @@ export default {
   },
 
   methods: {
+    clickToDetails(item) {
+      uni.navigateTo({
+        url: `/pages/index/details/index?id=${item.id}&content=${item.content}&isCollection=${item.isCollection}`
+      })
+    },
     judgeLogin(status) {
       if (status) {
         this.getList(this.page).then(({ data }) => {
@@ -85,7 +95,7 @@ export default {
     },
     getList(page) {
       return new Promise((resolve, rej) => {
-        getJobList(page)
+        getJobList(page, this.userInfo.uuid)
           .then(res => {
             resolve(res)
           })
@@ -94,7 +104,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('appState', ['isLogin']),
+    ...mapState('appState', ['isLogin', 'userInfo']),
     gameListFormter() {
       return this.gameList.map(item => {
         return { ...item, img: JSON.parse(item.img)[0] }

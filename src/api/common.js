@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-21 18:20:33
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-21 18:32:21
+ * @LastEditTime: 2022-04-30 17:54:02
  */
 import request from './request'
 const imageUpload = data => {
@@ -20,4 +20,8 @@ const imageUpload = data => {
     }
   )
 }
-export { imageUpload }
+
+const getBanList = page => {
+  return request('get', `banner/list/${page}`)
+}
+export { imageUpload, getBanList }

@@ -4,21 +4,24 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 15:20:43
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-24 19:17:17
+ * @LastEditTime: 2022-04-30 19:53:59
 -->
 <template>
   <view class="content">
     <toast></toast>
-    <view v-for="item in findData" :key="item.id">
-      <u-swipe-action>
-        <u-swipe-action-item :options="options" @click="del(item.id)">
-          <game-template
-            :item="item"
-            @click.native="clickToDetails(item.id)"
-          ></game-template>
-        </u-swipe-action-item>
-      </u-swipe-action>
+    <view v-if="findData.length">
+      <view v-for="item in findData" :key="item.id">
+        <u-swipe-action>
+          <u-swipe-action-item :options="options" @click="del(item.id)">
+            <game-template
+              :item="item"
+              @click.native="clickToDetails(item.id, item.isCollection)"
+            ></game-template>
+          </u-swipe-action-item>
+        </u-swipe-action>
+      </view>
     </view>
+    <u-empty v-else> </u-empty>
   </view>
 </template>
 
@@ -48,9 +51,9 @@ export default {
     ...mapState('appState', ['userInfo'])
   },
   methods: {
-    clickToDetails(id) {
+    clickToDetails(id, isCollection) {
       uni.navigateTo({
-        url: `/pages/game-details/index?id=${id}`
+        url: `/pages/game-details/index?id=${id}&isCollection=${isCollection}`
       })
     },
     async init() {
@@ -65,7 +68,9 @@ export default {
     getFindList(page) {
       return new Promise(async (res, rej) => {
         res(
-          (await getInvitationList(page)).data.postList.filter(item => {
+          (
+            await getInvitationList(page, this.userInfo.uuid)
+          ).data.postList.filter(item => {
             return item.publisher === this.userInfo.uuid
           })
         )

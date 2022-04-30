@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:38
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-24 19:21:56
+ * @LastEditTime: 2022-04-30 19:40:51
 -->
 <template>
   <view>
@@ -49,7 +49,7 @@
           v-for="item in findData"
           :item="item"
           :key="item.id"
-          @click.native="clickToDetails(item.id)"
+          @click.native="clickToDetails(item.id, item.isCollection)"
         ></game-template>
         <u-loadmore
           :status="status"
@@ -65,18 +65,14 @@
 <script>
 import { mapState } from 'vuex'
 import { getInvitationList } from '@/api/Invitation.js'
-
+import { getBanList } from '@/api/common.js'
 export default {
   data() {
     return {
       demoAvatar: require('@/static/logo.png'),
       status: 'loadmore',
       title: 'Hello',
-      list1: [
-        'https://cdn.uviewui.com/uview/swiper/swiper1.png',
-        'https://cdn.uviewui.com/uview/swiper/swiper2.png',
-        'https://cdn.uviewui.com/uview/swiper/swiper3.png'
-      ],
+      list1: [],
       relationData: [
         {
           imageUrl: require('static/logo.png'),
@@ -94,7 +90,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('appState', ['isLogin'])
+    ...mapState('appState', ['isLogin', 'userInfo'])
   },
   onLoad() {
     this.init()
@@ -110,10 +106,17 @@ export default {
     },
     async init() {
       this.findData = await this.getFindList(1) //获取寻友广场数据
+      getBanList(1).then(({ data }) => {
+        console.log(1)
+        const array = data.bannerList.map(item => {
+          return item.image
+        })
+        this.list1 = array
+      })
     },
     getFindList(page) {
       return new Promise(async (res, rej) => {
-        res((await getInvitationList(page)).data.postList)
+        res((await getInvitationList(page, this.userInfo.uuid)).data.postList)
       })
     },
     toPersonDetail(publisher) {
@@ -121,9 +124,9 @@ export default {
         url: `/pages/my-information/index?type=other&publisher=${publisher}`
       })
     },
-    clickToDetails(id) {
+    clickToDetails(id, isCollection) {
       uni.navigateTo({
-        url: `/pages/game-details/index?id=${id}`
+        url: `/pages/game-details/index?id=${id}&isCollection=${isCollection}`
       })
     },
     loadmore() {
