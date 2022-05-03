@@ -4,50 +4,45 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:52:09
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-04 20:51:37
+ * @LastEditTime: 2022-05-02 11:26:15
 -->
 <template>
-  <view class="content">
-    <image class="logo" src="/static/logo.png"></image>
-    <view>
-      <text class="title">{{ title }}</text>
+  <view>
+    <view v-if="data.length">
+      <match-template :initData="gameListFormter"></match-template>
     </view>
+    <u-empty v-else></u-empty>
   </view>
 </template>
 
 <script>
+import { getMyCollect } from '@/api/game.js'
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      title: 'Hello',
+      data: []
     }
   },
-  onLoad() {},
-  methods: {},
+  computed: {
+    ...mapState('appState', ['userInfo']),
+    gameListFormter() {
+      if (this.data.length) {
+        return this.data.map(item => {
+          return { ...item, img: JSON.parse(item.img)[0] }
+        })
+      } else {
+        return []
+      }
+    }
+  },
+  onLoad() {
+    getMyCollect(this.userInfo.uuid).then(({ data }) => {
+      this.data = data
+    })
+  },
+  methods: {}
 }
 </script>
 
-<style>
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin: 200rpx auto 50rpx auto;
-}
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
-}
-</style>
+<style></style>

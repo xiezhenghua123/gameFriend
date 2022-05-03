@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 20:42:00
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-30 19:00:59
+ * @LastEditTime: 2022-05-03 17:51:12
 -->
 <template>
   <view>
@@ -114,7 +114,7 @@ export default {
       await this.setUserInfo(userInfo)
       this.$emit('isLogin', true)
       this.$methods.chat.connect(this, userInfo)
-      this.goEasy.im.on(that.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, content => {
+      this.goEasy.im.on(this.GoEasy.IM_EVENT.CONVERSATIONS_UPDATED, content => {
         this.renderConversations(content)
       })
     },

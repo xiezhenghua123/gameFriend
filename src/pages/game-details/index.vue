@@ -4,14 +4,16 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 17:05:11
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-30 19:47:48
+ * @LastEditTime: 2022-05-03 18:57:06
 -->
 <template>
   <view style="margin-bottom: 120rpx">
     <u-toast ref="uToast" style="z-index: 999"></u-toast>
     <view class="top-box m-10">
       <view class="person">
-        <u-avatar :src="initData.avatar" size="50"></u-avatar>
+        <view @click="addPerson(initData.publisher)"
+          ><u-avatar :src="initData.avatar" size="50"></u-avatar
+        ></view>
         <view class="name ml-10">{{ initData.name }}</view>
       </view>
       <view class="operation-box">
@@ -49,7 +51,12 @@
 
     <view class="content-box">
       <view class="game m-10">
-        <img :src="initData.img" alt="" class="game-img" />
+        <img
+          :src="initData.img"
+          alt=""
+          class="game-img"
+          @click="preview(initData.img)"
+        />
         <view class="game-title">{{ initData.title }}</view>
         <view class="game-theme">主题：{{ initData.theme }}</view>
       </view>
@@ -160,7 +167,7 @@ export default {
     }
   },
   onLoad({ id, isCollection }) {
-    this.isCollection = isCollection
+    this.isCollection = isCollection || 1
     this.id = id
     getInvitationDetails(id).then(({ data }) => {
       this.initData = data
@@ -174,6 +181,16 @@ export default {
     }
   },
   methods: {
+    addPerson(id) {
+      uni.navigateTo({
+        url: `/pages/my-information/index?type=other&id=${id}`
+      })
+    },
+    preview(url) {
+      uni.previewImage({
+        urls: [url]
+      })
+    },
     delReply(id) {
       console.log(id)
       delReply(id).then(() => {

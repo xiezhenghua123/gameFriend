@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:38
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-30 19:40:51
+ * @LastEditTime: 2022-05-03 18:20:45
 -->
 <template>
   <view>
@@ -97,6 +97,7 @@ export default {
   },
   onPullDownRefresh() {
     this.init()
+    uni.stopPullDownRefresh()
   },
   methods: {
     judgeLogin(status) {

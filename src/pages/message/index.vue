@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:52:09
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-22 22:38:23
+ * @LastEditTime: 2022-05-03 18:19:49
 -->
 <template>
   <view>
@@ -63,6 +63,7 @@ export default {
   },
   onPullDownRefresh() {
     this.reflesh()
+    uni.stopPullDownRefresh()
   },
   methods: {
     click(data) {

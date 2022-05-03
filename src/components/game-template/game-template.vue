@@ -4,14 +4,16 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 16:34:15
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-24 19:06:33
+ * @LastEditTime: 2022-05-03 18:51:30
 -->
 <template>
   <view class="find">
     <view class="game-item p-10">
       <view class="top flex">
         <view class="person">
-          <u-avatar :src="item.avatar" size="50"></u-avatar>
+          <view @click.stop="addPerson(item.publisher)">
+            <u-avatar :src="item.avatar" size="50"></u-avatar>
+          </view>
           <view class="name">{{ item.name }}</view>
         </view>
         <view class="type">{{ item.level }}比赛</view>
@@ -21,7 +23,12 @@
           <view class="title">{{ item.title }}</view>
           <view class="details">{{ item.theme }}</view>
         </view>
-        <img :src="item.img" alt="" class="img" />
+        <img
+          :src="item.img"
+          alt=""
+          class="img"
+          @click.stop="preview(item.img)"
+        />
       </view>
       <view class="bottom flex">
         <view class="number-box">
@@ -46,6 +53,16 @@ export default {
     return {}
   },
   methods: {
+    addPerson(id) {
+      uni.navigateTo({
+        url: `/pages/my-information/index?type=other&id=${id}`
+      })
+    },
+    preview(url) {
+      uni.previewImage({
+        urls: [url]
+      })
+    },
     timeFormat(time) {
       return time.replace(/T/g, ' ').replace(/\.[\d]{6}Z/g, '')
     }

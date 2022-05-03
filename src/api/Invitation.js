@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-23 14:52:35
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-30 19:34:00
+ * @LastEditTime: 2022-05-02 09:59:47
  */
 import request from './request/index'
 
@@ -74,6 +74,19 @@ const cancelCollect = (pid, uuid) => {
   )
 }
 
+const getMyCollect = id => {
+  return request(
+    'get',
+    'collection/post/:id',
+    {},
+    {
+      params: {
+        id: id
+      }
+    }
+  )
+}
+
 export {
   addInvitation,
   editInvitation,
@@ -81,5 +94,6 @@ export {
   delInvitation,
   getInvitationDetails,
   collect,
-  cancelCollect
+  cancelCollect,
+  getMyCollect
 }

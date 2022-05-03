@@ -30,7 +30,8 @@
     {
       "path": "pages/teammate/index",
       "style": {
-        "navigationBarTitleText": "队友"
+        "navigationBarTitleText": "队友",
+        "enablePullDownRefresh": true
       }
     },
     {

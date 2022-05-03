@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 15:28:59
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-25 10:43:31
+ * @LastEditTime: 2022-05-03 18:53:33
 -->
 
 <template>
@@ -101,7 +101,7 @@
     <view class="bottom p-10" v-if="type === 'mySelf'">
       <u-button text="保存修改" type="primary" size="large"></u-button>
     </view>
-    <view class="bottom p-10" v-if="type === 'other'">
+    <view class="bottom p-10" v-if="type === 'other'" @click="add">
       <u-button text="发送好友申请" type="primary" size="large"></u-button>
     </view>
     <view class="bottom p-10" v-if="type === 'del'" @click="del">
@@ -114,8 +114,9 @@
 </template>
 
 <script>
-import { delFriend } from '@/api/user.js'
+import { delFriend, addFriend } from '@/api/user.js'
 import { successToast } from '../../components/toast/index.js'
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -139,6 +140,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('appState', ['userInfo']),
     otherPerson() {
       return this.type !== 'mySelf'
     }
@@ -160,6 +162,13 @@ export default {
   },
 
   methods: {
+    add() {
+      addFriend(this.userInfo.uuid, {
+        friend: this.uuid
+      }).then(data => {
+        successToast('添加好友通知已发送！')
+      })
+    },
     relation() {
       this.$methods.chat.enterChat(this.uuid, 'private', this)
     },
