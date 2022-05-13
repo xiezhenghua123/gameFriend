@@ -4,23 +4,15 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-03 14:52:20
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-02 11:18:43
+ * @LastEditTime: 2022-05-12 12:03:25
  */
 import request from './request'
-const getJobList = (page, uid) => {
-  return request(
-    'get',
-    'game/list/:page',
-    {},
-    {
-      params: {
-        page: page
-      },
-      query: {
-        uid: uid
-      }
+const getJobList = (page, data) => {
+  return request('post', 'game/list/:page', data, {
+    params: {
+      page: page
     }
-  )
+  })
 }
 
 //关注比赛
@@ -53,4 +45,10 @@ const getMyCollect = id => {
     }
   )
 }
-export { getJobList, collect, cancelCollect, getMyCollect }
+
+//推荐算法打入数据
+const dataIn = data => {
+  return request('post', 'setData', data)
+}
+
+export { getJobList, collect, cancelCollect, getMyCollect, dataIn }

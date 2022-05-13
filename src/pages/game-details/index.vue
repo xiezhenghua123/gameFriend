@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 17:05:11
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-03 18:57:06
+ * @LastEditTime: 2022-05-12 19:21:38
 -->
 <template>
   <view style="margin-bottom: 120rpx">
@@ -12,7 +12,7 @@
     <view class="top-box m-10">
       <view class="person">
         <view @click="addPerson(initData.publisher)"
-          ><u-avatar :src="initData.avatar" size="50"></u-avatar
+          ><u-avatar :src="initData.avatar || item.img" size="50"></u-avatar
         ></view>
         <view class="name ml-10">{{ initData.name }}</view>
       </view>
@@ -20,7 +20,7 @@
         <view class="collect mr-10">
           <view @click="clickIcon"
             ><u-icon
-              :name="isCollection == '1' ? 'star-fill' : 'star'"
+              :name="initData.isCollection == '1' ? 'star-fill' : 'star'"
               size="22"
               color="#ff9900"
             ></u-icon
@@ -75,7 +75,7 @@
         confirmText="回复"
         closeOnClickOverlay
         @confirm="replyConfirm"
-        @cancel="replyShow = false"
+        @cancel="cancel"
       >
         <u-input v-model="content" border="surround"></u-input>
       </u-modal>
@@ -94,7 +94,7 @@
                   size="mini"
                   @click="reply(item.fromName, item.id, item.fromId, item.toId)"
                 ></u-button>
-                <view class="ml-10" v-if="userInfo.uuid == item.toId">
+                <view class="ml-10" v-if="userInfo.uuid == item.fromId">
                   <u-button
                     type="error"
                     text="删除"
@@ -162,17 +162,16 @@ export default {
         id: '',
         toId: ''
       },
-      content: '',
-      isCollection: '0'
+      content: ''
+      // isCollection: '0'
     }
   },
-  onLoad({ id, isCollection }) {
-    this.isCollection = isCollection || 1
+  onLoad({ id }) {
+    // this.isCollection = isCollection || 1
     this.id = id
-    getInvitationDetails(id).then(({ data }) => {
-      this.initData = data
-    })
-    this.getComments()
+  },
+  onShow() {
+    this.init()
   },
   computed: {
     ...mapState('appState', ['userInfo']),
@@ -181,6 +180,15 @@ export default {
     }
   },
   methods: {
+    cancel() {
+      this.replyShow = false
+    },
+    init() {
+      getInvitationDetails(this.id, this.userInfo.uuid).then(({ data }) => {
+        this.initData = data
+      })
+      this.getComments()
+    },
     addPerson(id) {
       uni.navigateTo({
         url: `/pages/my-information/index?type=other&id=${id}`
@@ -210,8 +218,8 @@ export default {
         return
       }
       replyComment(this.replyContianer.id, {
-        fromId: this.replyContianer.fromId,
-        toId: this.replyContianer.toId,
+        fromId: this.userInfo.uuid,
+        toId: this.replyContianer.fromId,
         content: this.content
       }).then(() => {
         this.$refs.uToast.show({
@@ -260,6 +268,7 @@ export default {
           message: '评论成功',
           type: 'success'
         })
+        this.answerData = ''
         this.getComments()
       })
     },
@@ -273,22 +282,29 @@ export default {
           type: 'success'
         })
         this.editShow = false
-        const { data } = await getInvitationDetails(editData.id)
+        const { data } = await getInvitationDetails(
+          editData.id,
+          this.userInfo.uuid
+        )
         this.initData = data
       })
     },
     clickIcon() {
-      if (this.isCollection == '0') {
-        collect({ postId: this.id, uid: this.userInfo.uuid }).then(() => {
-          this.isCollection = '1'
-          this.$refs.uToast.show({
-            message: '收藏成功！',
-            type: 'success'
-          })
-        })
+      if (this.initData.isCollection == '0') {
+        collect({ postId: this.id, uid: this.userInfo.uuid }).then(
+          ({ data }) => {
+            this.isCollection = '1'
+            this.$refs.uToast.show({
+              message: '收藏成功！',
+              type: 'success'
+            })
+            this.initData.isCollection = '1'
+            this.initData.collectionId = data.collectionId
+          }
+        )
       } else {
-        cancelCollect(this.id, this.userInfo.uuid).then(() => {
-          this.isCollection = '0'
+        cancelCollect(this.id, this.initData.collectionId).then(() => {
+          this.initData.isCollection = '0'
           this.$refs.uToast.show({
             message: '取消收藏成功！',
             type: 'success'

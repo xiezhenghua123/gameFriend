@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 15:20:43
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-30 19:53:59
+ * @LastEditTime: 2022-05-12 19:32:01
 -->
 <template>
   <view class="content">
@@ -27,7 +27,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { getInvitationList, delInvitation } from '@/api/Invitation.js'
+import { getMyRelease, delInvitation } from '@/api/Invitation.js'
 import { successToast } from '@/components/toast/index.js'
 export default {
   data() {
@@ -67,13 +67,16 @@ export default {
     },
     getFindList(page) {
       return new Promise(async (res, rej) => {
-        res(
-          (
-            await getInvitationList(page, this.userInfo.uuid)
-          ).data.postList.filter(item => {
-            return item.publisher === this.userInfo.uuid
+        let { data } = await getMyRelease(this.userInfo.uuid)
+        data = data
+          .filter(item => {
+            return item.status == 1
           })
-        )
+          .map(item => {
+            return { ...item, avatar: this.userInfo.avatar }
+          })
+
+        res(data)
       })
     }
   }

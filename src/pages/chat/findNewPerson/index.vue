@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-08 16:27:20
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-25 11:01:09
+ * @LastEditTime: 2022-05-11 17:31:46
 -->
 <template>
   <view class="m-10">
@@ -25,7 +25,7 @@
         class="user-item mb-10"
         v-for="item in person"
         :key="item.uuid"
-        @click="toPersonDetail"
+        @click="toPersonDetail(item)"
       >
         <view class="flex">
           <div class="user-item-avatar">
@@ -60,7 +60,7 @@ export default {
   methods: {
     toPersonDetail() {
       uni.navigateTo({
-        url: '/pages/my-information/index?type=other'
+        url: `/pages/my-information/index?type=other&id=${item.openid}`
       })
     },
     find() {

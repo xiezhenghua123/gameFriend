@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 19:20:27
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-26 21:01:01
+ * @LastEditTime: 2022-05-12 19:22:43
 -->
 <template>
   <view class="box comment-box">
@@ -12,7 +12,9 @@
       <view class="comment">
         <view class="top">
           <view class="person">
-            <u-avatar :src="initData.fromAvatar" size="50"></u-avatar>
+            <view @click="addPerson(initData.fromId)">
+              <u-avatar :src="initData.fromAvatar" size="40"></u-avatar>
+            </view>
             <view class="name ml-10">{{ initData.fromName }}</view>
           </view>
           <view class="position">{{ '--' + (position + 1) + '楼--' }}</view>
@@ -24,24 +26,28 @@
         <view class="time mt-10 mb-10">评论于{{ initData.time }}</view>
       </view>
       <view class="replay" v-if="initData.reply.length">
-        <view
-          class="flex"
-          style="justify-content: space-between"
-          v-for="(item, index) in initData.reply"
-          :key="index"
-        >
-          <view class="flex">
-            <view class="name mr-10">{{ item.fromName }}</view>
-            <u-avatar :src="item.fromAvatar" size="20"></u-avatar>
-            <view> ：{{ item.content }} </view>
+        <view v-for="(item, index) in initData.reply" :key="index">
+          <view class="flex" style="justify-content: space-between">
+            <view class="flex">
+              <view class="name mr-10">{{ item.fromName }}</view>
+              <view @click="addPerson(initData.fromId)">
+                <u-avatar :src="item.fromAvatar" size="20"></u-avatar>
+              </view>
+              <view> ：{{ item.content }} </view>
+            </view>
+            <view v-if="userInfo.uuid == item.fromId">
+              <u-button
+                type="error"
+                size="mini"
+                text="删除"
+                @click="delReply(item.id)"
+              ></u-button>
+            </view>
           </view>
-          <view v-if="userInfo.uuid == item.fromId">
-            <u-button
-              type="error"
-              size="mini"
-              text="删除"
-              @click="delReply(item.id)"
-            ></u-button>
+          <view>
+            <view class="time" style="margin-top: 5px; margin-bottom: 3px"
+              >回复于{{ item.time }}</view
+            >
           </view>
         </view>
       </view>
@@ -70,6 +76,11 @@ export default {
     ...mapState('appState', ['userInfo'])
   },
   methods: {
+    addPerson(id) {
+      uni.navigateTo({
+        url: `/pages/my-information/index?type=other&id=${id}`
+      })
+    },
     delReply(id) {
       this.$emit('delReply', id)
     }

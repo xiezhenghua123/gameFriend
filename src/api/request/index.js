@@ -4,12 +4,13 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 17:10:08
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-03 00:39:53
+ * @LastEditTime: 2022-05-13 13:29:29
  */
 
 import { apiRoot } from '../requestUrl/index.js'
 import ajax from 'uni-ajax'
 import { errorToast } from '../../components/toast/index.js'
+import store from '../../store/index.js'
 
 const baseConfig = {
   baseURL: apiRoot,
@@ -35,6 +36,20 @@ const setInterceptors = instance => {
 }
 
 const requestInterceptors = config => {
+  console.log(config)
+  const repx = /(posts\/add)|(friend\/add)/
+  const sameUrl = /comment|reply/
+  if (
+    (repx.test(config.url) ||
+      (sameUrl.test(config.url) && config.method == 'POST')) &&
+    store.state.appState.userInfo.status == '1'
+  ) {
+    wx.showToast({
+      title: '已被禁言',
+      icon: 'error'
+    })
+    return Promise.reject('已被禁言')
+  }
   return config
 }
 

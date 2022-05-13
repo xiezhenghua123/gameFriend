@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-21 15:55:12
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-26 10:13:59
+ * @LastEditTime: 2022-05-12 17:45:00
  */
 import request from './request'
 
@@ -148,7 +148,42 @@ const confirmPhone = data => {
   return request('post', 'authenticate', data)
 }
 
+const edit = (id, data) => {
+  return request('put', ':id/update', data, {
+    params: {
+      id: id
+    }
+  })
+}
+
+const getPersonData = id => {
+  return request(
+    'get',
+    'user/:id',
+    {},
+    {
+      params: {
+        id: id
+      }
+    }
+  )
+}
+
+const getRecommandData = id => {
+  return request(
+    'get',
+    'viewShow',
+    {},
+    {
+      query: {
+        id: id
+      }
+    }
+  )
+}
+
 export {
+  getRecommandData,
   login,
   getFriendsList,
   getGroupList,
@@ -162,5 +197,7 @@ export {
   friendsNotice,
   addFriendConfirm,
   delFriend,
-  confirmPhone
+  confirmPhone,
+  edit,
+  getPersonData
 }

@@ -4,11 +4,11 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 15:20:43
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-02 10:08:04
+ * @LastEditTime: 2022-05-07 14:49:31
 -->
 <template>
   <view class="content">
-    <view v-if="findData">
+    <view v-if="findData.length">
       <view v-for="item in findData" :key="item.id">
         <game-template
           :item="item"
@@ -29,15 +29,19 @@ export default {
       findData: []
     }
   },
-  onLoad() {
-    getMyCollect(this.userInfo.uuid).then(({ data }) => {
-      this.findData = data
-    })
+  onLoad() {},
+  onShow() {
+    this.init()
   },
   computed: {
     ...mapState('appState', ['userInfo'])
   },
   methods: {
+    init() {
+      getMyCollect(this.userInfo.uuid).then(({ data }) => {
+        this.findData = data
+      })
+    },
     clickToDetails(item) {
       uni.navigateTo({
         url: `/pages/game-details/index?id=${item.id}`

@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:38
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-03 18:20:45
+ * @LastEditTime: 2022-05-12 18:30:49
 -->
 <template>
   <view>
@@ -21,24 +21,21 @@
           <view class="left mr-10"></view>
           <view class="name">与我相关</view>
         </view>
-        <view class="content-box">
-          <view
-            class="content-item"
-            v-for="item in relationData"
-            :key="item.id"
-          >
-            <view class="person">
-              <u-avatar
-                :src="item.avatar ? 'item.avatar' : demoAvatar"
-                size="55"
-              ></u-avatar>
-              <view class="name">{{ item.name }}</view>
-            </view>
-            <view class="check" @click="toPersonDetail(item.publisher)">
-              查看</view
+        <u-scroll-list>
+          <view class="content-box">
+            <view
+              class="content-item p-10"
+              v-for="item in relationData"
+              :key="item.openid"
             >
+              <view class="person">
+                <u-avatar :src="item.avatar" size="55"></u-avatar>
+                <view class="name">{{ item.name }}</view>
+              </view>
+              <view class="check" @click="toPersonDetail(item)"> 查看</view>
+            </view>
           </view>
-        </view>
+        </u-scroll-list>
       </view>
       <view class="find box">
         <view class="title-box mb-10">
@@ -46,7 +43,7 @@
           <view class="name">寻友广场</view>
         </view>
         <game-template
-          v-for="item in findData"
+          v-for="item in data"
           :item="item"
           :key="item.id"
           @click.native="clickToDetails(item.id, item.isCollection)"
@@ -64,6 +61,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { getRecommandData } from '@/api/user.js'
 import { getInvitationList } from '@/api/Invitation.js'
 import { getBanList } from '@/api/common.js'
 export default {
@@ -73,24 +71,18 @@ export default {
       status: 'loadmore',
       title: 'Hello',
       list1: [],
-      relationData: [
-        {
-          imageUrl: require('static/logo.png'),
-          name: '张三',
-          id: '1'
-        },
-        {
-          imageUrl: require('static/logo.png'),
-          name: '李四',
-          id: '2'
-        }
-      ],
+      relationData: [],
       findDataPage: 1,
       findData: []
     }
   },
   computed: {
-    ...mapState('appState', ['isLogin', 'userInfo'])
+    ...mapState('appState', ['isLogin', 'userInfo']),
+    data() {
+      return this.findData.filter(item => {
+        return item.status == 1
+      })
+    }
   },
   onLoad() {
     this.init()
@@ -114,15 +106,18 @@ export default {
         })
         this.list1 = array
       })
+      getRecommandData(this.userInfo.uuid).then(({ data }) => {
+        this.relationData = data
+      })
     },
     getFindList(page) {
       return new Promise(async (res, rej) => {
         res((await getInvitationList(page, this.userInfo.uuid)).data.postList)
       })
     },
-    toPersonDetail(publisher) {
+    toPersonDetail(item) {
       uni.navigateTo({
-        url: `/pages/my-information/index?type=other&publisher=${publisher}`
+        url: `/pages/my-information/index?type=other&id=${item.openid}`
       })
     },
     clickToDetails(id, isCollection) {

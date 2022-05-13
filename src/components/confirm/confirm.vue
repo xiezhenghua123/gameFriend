@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 20:42:00
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-03 17:51:12
+ * @LastEditTime: 2022-05-13 10:53:42
 -->
 <template>
   <view>
@@ -132,11 +132,10 @@ export default {
               that.$set(that.userInfo, 'name', data.data.name)
               that.$set(that.userInfo, 'avatar', data.data.avatar)
               that.$set(that.userInfo, 'uuid', data.data.openid)
+              that.$set(that.userInfo, 'status', data.data.status)
               if (data.code == 0) {
                 that.remember({
-                  name: data.data.name,
-                  avatar: data.data.avatar,
-                  phone: data.data.phone,
+                  ...data.data,
                   uuid: data.data.openid
                 })
               } else {

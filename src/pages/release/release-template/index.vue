@@ -29,6 +29,9 @@
           v-model="form.content"
           placeholder="请输入详细内容"
         ></u--textarea>
+        <view>
+          <view style="color: bbb"> 详细内容填上指导老师会更好哦！ </view>
+        </view>
       </u-form-item>
       <u-form-item
         prop="level"
@@ -50,6 +53,29 @@
           title="请选择赛事级别"
           @close="levelShow = false"
           @select="levelSelect"
+        >
+        </u-action-sheet>
+      </u-form-item>
+      <u-form-item
+        prop="subject"
+        label="赛事科目："
+        required
+        @click="subjectShow = true"
+        :closeOnClickOverlay="true"
+        :closeOnClickAction="true"
+      >
+        <u--input
+          v-model="form.subject"
+          placeholder="请选择赛事科目"
+          disabled
+        ></u--input>
+        <u-icon slot="right" name="arrow-right"></u-icon>
+        <u-action-sheet
+          :show="subjectShow"
+          :actions="subjectArray"
+          title="请选择赛事级别"
+          @close="subjectShow = false"
+          @select="subjectSelect"
         >
         </u-action-sheet>
       </u-form-item>
@@ -78,7 +104,8 @@ export default {
           content: '',
           theme: '',
           level: '',
-          img: ''
+          img: '',
+          subject: ''
         }
       }
     }
@@ -110,16 +137,46 @@ export default {
           required: true,
           message: '请选择赛事级别',
           trigger: 'blur'
+        },
+        subject: {
+          required: true,
+          message: '请选择赛事科目',
+          trigger: 'blur'
         }
       },
       levelShow: false,
+      subjectShow: false,
+      subjectArray: [
+        {
+          name: '数学建模竞赛'
+        },
+        {
+          name: '物理竞赛'
+        },
+        {
+          name: '电子竞赛'
+        },
+        {
+          name: '创新创业大赛'
+        },
+        {
+          name: '市场调研大赛'
+        },
+        {
+          name: '程序设计大赛'
+        },
+        {
+          name: '法庭模拟大赛'
+        }
+      ],
       levelArray: [{ name: '校级' }, { name: '省级' }, { name: '国家级' }],
       form: {
         title: '',
         content: '',
         theme: '',
         level: '',
-        img: ''
+        img: '',
+        subject: ''
       }
     }
   },
@@ -151,6 +208,10 @@ export default {
     levelSelect(index) {
       this.form.level = index.name
       this.levelShow = false
+    },
+    subjectSelect(index) {
+      this.form.subject = index.name
+      this.subjectShow = false
     },
     deletePic() {
       this.form.img = ''

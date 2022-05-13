@@ -4,10 +4,11 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-03-11 22:35:51
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-04 21:12:29
+ * @LastEditTime: 2022-05-12 15:57:08
 -->
 <template>
   <view>
+    <toast></toast>
     <view class="text-box">
       <u--textarea
         v-model="value"
@@ -30,17 +31,32 @@
 </template>
 
 <script>
+import { add } from '@/api/feedBack.js'
+import { mapState } from 'vuex'
+import { successToast } from '../../components/toast'
+
 export default {
   data() {
     return {
-      value: '',
+      value: ''
     }
+  },
+  computed: {
+    ...mapState('appState', ['userInfo'])
   },
   methods: {
     submit() {
-      console.log('提交了建议')
-    },
-  },
+      add({
+        user_id: this.userInfo.uuid,
+        user_name: this.userInfo.name,
+        title: 'xxx',
+        content: this.value,
+        status: '0'
+      }).then(() => {
+        successToast('提交成功！')
+      })
+    }
+  }
 }
 </script>
 

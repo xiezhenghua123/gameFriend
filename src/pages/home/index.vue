@@ -4,21 +4,20 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:47
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-04-25 10:36:47
+ * @LastEditTime: 2022-05-11 17:29:27
 -->
 <template>
   <view class="content">
     <view v-if="isLogin">
-      <view class="top" @click="uploadAvatar">
+      <view class="top">
         <view class="message">
           <u-avatar size="60" :src="userInfo.avatar"></u-avatar>
           <view class="m_right">
             <view class="message_name">{{ userInfo.name }}</view>
-            <view class="message_identity"> | 信管 | 湘潭大学 </view>
+            <view class="message_identity">
+              {{ userInfo.specialty + '  |  ' + userInfo.school }}
+            </view>
           </view>
-        </view>
-        <view>
-          <u-icon name="arrow-right"></u-icon>
         </view>
       </view>
       <view class="divider">
@@ -66,22 +65,22 @@ export default {
     clickFeature(key) {
       if (key === 'my-information') {
         uni.navigateTo({
-          url: `/pages/${key}/index?type=mySelf`
+          url: `/pages/${key}/index?type=mySelf&id=${this.userInfo.openid}`
         })
       } else {
         uni.navigateTo({
           url: `/pages/${key}/index`
         })
       }
-    },
-    uploadAvatar() {
-      uni.chooseImage({
-        count: 1,
-        success(path) {
-          console.log(path.tempFilePaths)
-        }
-      })
     }
+    // uploadAvatar() {
+    //   uni.chooseImage({
+    //     count: 1,
+    //     success(path) {
+    //       console.log(path.tempFilePaths)
+    //     }
+    //   })
+    // }
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:52:09
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-02 11:26:15
+ * @LastEditTime: 2022-05-12 18:40:56
 -->
 <template>
   <view>
@@ -28,20 +28,29 @@ export default {
     ...mapState('appState', ['userInfo']),
     gameListFormter() {
       if (this.data.length) {
-        return this.data.map(item => {
-          return { ...item, img: JSON.parse(item.img)[0] }
-        })
+        return this.data
+          .map(item => {
+            return { ...item, img: JSON.parse(item.img)[0], isCollection: 1 }
+          })
+          .filter(item => {
+            return item.status == 1
+          })
       } else {
         return []
       }
     }
   },
-  onLoad() {
-    getMyCollect(this.userInfo.uuid).then(({ data }) => {
-      this.data = data
-    })
+  onLoad() {},
+  onShow() {
+    this.init()
   },
-  methods: {}
+  methods: {
+    init() {
+      getMyCollect(this.userInfo.uuid).then(({ data }) => {
+        this.data = data
+      })
+    }
+  }
 }
 </script>
 

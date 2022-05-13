@@ -4,16 +4,16 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-05-02 10:18:00
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-03 17:59:06
+ * @LastEditTime: 2022-05-10 12:26:49
 -->
 <template>
   <div>
-    <view v-if="initData.length">
+    <view v-if="data.length">
       <view
-        v-for="item in initData"
+        v-for="(item, index) in data"
         :key="item.id"
         class="content p-10"
-        @click="clickToDetails(item)"
+        @click.native="clickToDetails(index)"
       >
         <img
           :src="item.img"
@@ -41,9 +41,23 @@
 </template>
 <script>
 export default {
+  data() {
+    return {
+      data: []
+    }
+  },
   props: {
     initData: {
-      type: Object
+      type: Array
+    }
+  },
+  watch: {
+    initData: {
+      handler(val) {
+        this.data = val
+      },
+      immediate: true,
+      deep: true
     }
   },
   methods: {
@@ -52,9 +66,11 @@ export default {
         urls: [url]
       })
     },
-    clickToDetails(item) {
+    clickToDetails(index) {
+      //关注比赛无法获取item，只能通过此方法
+      const item = this.data[index]
       uni.navigateTo({
-        url: `/pages/index/details/index?id=${item.id}&content=${item.content}&isCollection=${item.isCollection}`
+        url: `/pages/index/details/index?data=${JSON.stringify(item)}`
       })
     }
   }
