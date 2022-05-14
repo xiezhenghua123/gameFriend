@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 20:59:08
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-14 22:28:51
+ * @LastEditTime: 2022-05-15 00:10:52
  */
 body {
   font-size: $uni-font-size-base;
@@ -65,4 +65,10 @@ body {
 }
 .font-12 {
   font-size: 24rpx;
+}
+.font-bold {
+  font-weight: bold;
+}
+.font-16 {
+  font-size: 32rpx;
 }

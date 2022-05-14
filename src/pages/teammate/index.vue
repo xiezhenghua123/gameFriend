@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:38
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-14 22:25:02
+ * @LastEditTime: 2022-05-15 00:51:35
 -->
 <template>
   <view>
@@ -25,7 +25,7 @@
           <view class="left mr-10"></view>
           <view class="name">与我相关</view>
         </view>
-        <u-scroll-list>
+        <u-scroll-list v-if="relationData.length">
           <view class="content-box">
             <view
               class="content-item p-10"
@@ -40,47 +40,58 @@
             </view>
           </view>
         </u-scroll-list>
+        <u-empty v-else></u-empty>
       </view>
       <view class="study box">
         <view class="title-box mb-10">
           <view class="left mr-10"></view>
           <view class="name">学习资源推荐</view>
         </view>
-        <view class="study-box">
-          <view
-            class="study-item p-10 mb-10"
-            v-for="item in studyInformation"
-            :key="item.id"
-          >
-            <view class="left">
-              <view class="name">{{ item.name }}</view>
-              <view class="subject mt-10"
-                ><span>{{ item.subject }}</span></view
+        <u-scroll-list v-if="studyInformation.length">
+          <view class="content-box">
+            <view
+              class="content-item p-10"
+              v-for="item in studyInformation"
+              :key="item.id"
+            >
+              <view class="person">
+                <view class="font-weight font-16">{{ item.name }}</view>
+              </view>
+              <view
+                style="
+                  width: 100%;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                "
               >
-            </view>
-            <view class="right" @click="downLoad(item.url)">
-              <i class="iconfont icon-wenjianjia"></i>
-              <view> 下载 </view>
+                <view style="margin-bottom: 8rpx">{{ item.subject }}</view>
+                <view class="check" @click="downLoad(item.url)"> 下载</view>
+              </view>
             </view>
           </view>
-        </view>
+        </u-scroll-list>
+        <u-empty text="暂无资源推荐" v-else></u-empty>
       </view>
       <view class="find box">
         <view class="title-box mb-10">
           <view class="left mr-10"></view>
           <view class="name">寻友广场</view>
         </view>
-        <game-template
-          v-for="item in data"
-          :item="item"
-          :key="item.id"
-          @click.native="clickToDetails(item.id, item.isCollection)"
-        ></game-template>
-        <u-loadmore
-          :status="status"
-          loadmore-text="点击加载更多"
-          @loadmore="loadmore"
-        />
+        <view v-if="data.length">
+          <game-template
+            v-for="item in data"
+            :item="item"
+            :key="item.id"
+            @click.native="clickToDetails(item.id, item.isCollection)"
+          ></game-template>
+          <u-loadmore
+            :status="status"
+            loadmore-text="点击加载更多"
+            @loadmore="loadmore"
+          />
+        </view>
+        <u-empty v-else></u-empty>
       </view>
     </view>
     <confirm v-else @isLogin="judgeLogin"></confirm>

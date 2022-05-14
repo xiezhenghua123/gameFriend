@@ -17,7 +17,6 @@
 .relation {
   .content-box {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     // justify-content: space-around;
     color: #fff;
@@ -26,10 +25,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      height: 130px;
+      height: 260rpx;
       border-radius: 5px;
       background-color: rgb(22, 191, 221);
       margin-right: 5px;
+      width: 200rpx;
       .person {
         text-align: center;
         margin-top: 10px;
@@ -41,6 +41,7 @@
       .check {
         border: 1px solid #fff;
         padding: 2px 25px;
+        width: 40%;
         margin-bottom: 8px;
         border-radius: 3px;
       }
@@ -49,26 +50,37 @@
 }
 
 .study {
-  &-box {
-  }
-  &-item {
+  .content-box {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 20rpx;
-    background-color: rgba(41, 146, 233, 0.2);
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    .left {
-      text-align: center;
-      .name {
-        font-size: 32rpx;
-        font-weight: bold;
+    // justify-content: space-around;
+    color: #fff;
+    .content-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 230rpx;
+      border-radius: 5px;
+      background-color: rgb(22, 191, 221);
+      margin-right: 5px;
+      width: 350rpx;
+      .person {
+        text-align: center;
+        margin-top: 10px;
+        .name {
+          margin-top: 3px;
+          font-size: 12px;
+        }
       }
-    }
-    .right {
-      margin-right: 30rpx;
-      text-align: center;
+      .check {
+        border: 1px solid #fff;
+        padding: 2px 25px;
+        width: 60%;
+        margin-bottom: 8px;
+        border-radius: 3px;
+        text-align: center;
+      }
     }
   }
 }
