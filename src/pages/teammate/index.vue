@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-02 19:51:38
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-12 18:30:49
+ * @LastEditTime: 2022-05-14 22:25:02
 -->
 <template>
   <view>
@@ -14,7 +14,11 @@
           <view class="left mr-10"></view>
           <view class="name">热门比赛</view>
         </view>
-        <u-swiper :list="list1"></u-swiper>
+        <u-swiper
+          :list="list1"
+          keyName="image"
+          @click="clickToMatchDetails"
+        ></u-swiper>
       </view>
       <view class="relation box">
         <view class="title-box mb-10">
@@ -36,6 +40,30 @@
             </view>
           </view>
         </u-scroll-list>
+      </view>
+      <view class="study box">
+        <view class="title-box mb-10">
+          <view class="left mr-10"></view>
+          <view class="name">学习资源推荐</view>
+        </view>
+        <view class="study-box">
+          <view
+            class="study-item p-10 mb-10"
+            v-for="item in studyInformation"
+            :key="item.id"
+          >
+            <view class="left">
+              <view class="name">{{ item.name }}</view>
+              <view class="subject mt-10"
+                ><span>{{ item.subject }}</span></view
+              >
+            </view>
+            <view class="right" @click="downLoad(item.url)">
+              <i class="iconfont icon-wenjianjia"></i>
+              <view> 下载 </view>
+            </view>
+          </view>
+        </view>
       </view>
       <view class="find box">
         <view class="title-box mb-10">
@@ -63,7 +91,9 @@
 import { mapState } from 'vuex'
 import { getRecommandData } from '@/api/user.js'
 import { getInvitationList } from '@/api/Invitation.js'
-import { getBanList } from '@/api/common.js'
+import { getBanList, getStudyList } from '@/api/common.js'
+import { getDetailById } from '@/api/game.js'
+
 export default {
   data() {
     return {
@@ -73,7 +103,8 @@ export default {
       list1: [],
       relationData: [],
       findDataPage: 1,
-      findData: []
+      findData: [],
+      studyInformation: []
     }
   },
   computed: {
@@ -97,17 +128,44 @@ export default {
         this.init()
       }
     },
+    downLoad(url) {
+      const isImgRex = /(\.jpg)|(\.jpeg)|(\.png)/i
+      const isImg = isImgRex.test(url)
+      uni.showLoading({
+        title: '下载中',
+        success() {
+          uni.downloadFile({
+            url: url,
+            success({ tempFilePath, statusCode }) {
+              console.log(tempFilePath)
+              if (statusCode == '200') {
+                uni.hideLoading()
+                if (isImg) {
+                  uni.previewImage({
+                    urls: [url]
+                  })
+                } else {
+                  wx.openDocument({
+                    filePath: tempFilePath,
+                    showMenu: true
+                  })
+                }
+              }
+            }
+          })
+        }
+      })
+    },
     async init() {
       this.findData = await this.getFindList(1) //获取寻友广场数据
       getBanList(1).then(({ data }) => {
-        console.log(1)
-        const array = data.bannerList.map(item => {
-          return item.image
-        })
-        this.list1 = array
+        this.list1 = data.bannerList
       })
       getRecommandData(this.userInfo.uuid).then(({ data }) => {
         this.relationData = data
+      })
+      getStudyList(this.userInfo.uuid).then(({ data }) => {
+        this.studyInformation = data
       })
     },
     getFindList(page) {
@@ -123,6 +181,15 @@ export default {
     clickToDetails(id, isCollection) {
       uni.navigateTo({
         url: `/pages/game-details/index?id=${id}&isCollection=${isCollection}`
+      })
+    },
+    async clickToMatchDetails(index) {
+      //关注比赛无法获取item，只能通过此方法
+      const id = this.list1[index].game_id
+      let item = (await getDetailById(this.userInfo.openid, id)).data
+      item = { ...item, img: JSON.parse(item.img)[0] }
+      uni.navigateTo({
+        url: `/pages/index/details/index?data=${JSON.stringify(item)}`
       })
     },
     loadmore() {

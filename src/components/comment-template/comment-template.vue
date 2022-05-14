@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-04 19:20:27
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-12 19:22:43
+ * @LastEditTime: 2022-05-14 22:29:13
 -->
 <template>
   <view class="box comment-box">
@@ -23,7 +23,7 @@
           </view>
         </view>
         <view class="content mt-10">{{ initData.content }}</view>
-        <view class="time mt-10 mb-10">评论于{{ initData.time }}</view>
+        <view class="time mt-10 mb-10 font-12">评论于{{ initData.time }}</view>
       </view>
       <view class="replay" v-if="initData.reply.length">
         <view v-for="(item, index) in initData.reply" :key="index">
@@ -45,7 +45,9 @@
             </view>
           </view>
           <view>
-            <view class="time" style="margin-top: 5px; margin-bottom: 3px"
+            <view
+              class="time font-12"
+              style="margin-top: 5px; margin-bottom: 3px"
               >回复于{{ item.time }}</view
             >
           </view>

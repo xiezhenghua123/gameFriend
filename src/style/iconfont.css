@@ -1,12 +1,11 @@
 @font-face {
   font-family: 'iconfont'; /* Project id 3299955 */
-  src: url('//at.alicdn.com/t/font_3299955_pm9tjh1uvzb.css');
-  src: url('//at.alicdn.com/t/font_3299955_pm9tjh1uvzb.css?#iefix')
-      format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_3299955_pm9tjh1uvzb.woff2') format('woff2'),
-    url('//at.alicdn.com/t/font_3299955_pm9tjh1uvzb.woff') format('woff'),
-    url('//at.alicdn.com/t/font_3299955_pm9tjh1uvzb.ttf') format('truetype'),
-    url('#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_3299955_dyavyqsqxc.woff2?t=1652533053950')
+      format('woff2'),
+    url('//at.alicdn.com/t/font_3299955_dyavyqsqxc.woff?t=1652533053950')
+      format('woff'),
+    url('//at.alicdn.com/t/font_3299955_dyavyqsqxc.ttf?t=1652533053950')
+      format('truetype');
 }
 
 .iconfont {
@@ -41,4 +40,7 @@
 }
 .icon-jibenziliao:before {
   content: '\e61f';
+}
+.icon-wenjianjia:before {
+  content: '\ec17';
 }

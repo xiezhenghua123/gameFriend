@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-30 18:40:38
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-12 12:06:50
+ * @LastEditTime: 2022-05-14 22:21:56
 -->
 <template>
   <div class="m-10 content">
@@ -22,12 +22,14 @@
       >|<span class="mr-10 ml-10">{{ item.level }}</span
       >|<span class="mr-10 ml-10">{{ item.subject }}</span>
     </view>
-    <u-button
-      type="primary"
-      :text="isCollection == '0' ? '关注' : '取消关注'"
-      @click="collectOption"
-    >
-    </u-button>
+    <view class="mt-10">
+      <u-button
+        type="primary"
+        :text="isCollection == '0' ? '关注' : '取消关注'"
+        @click="collectOption"
+      >
+      </u-button>
+    </view>
   </div>
 </template>
 <script>
@@ -61,7 +63,7 @@ export default {
       if (this.isCollection == '0') {
         dataIn({
           openid: this.userInfo.uuid,
-          subject: this.item.name,
+          subject: this.item.subject,
           gameId: this.id
         }).then(() => {
           console.log('数据打入成功！')

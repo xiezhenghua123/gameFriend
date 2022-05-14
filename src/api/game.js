@@ -4,7 +4,7 @@
  * @Author: ZhenghuaXie
  * @Date: 2022-04-03 14:52:20
  * @LastEditors: ZhenghuaXie
- * @LastEditTime: 2022-05-12 12:03:25
+ * @LastEditTime: 2022-05-14 19:38:28
  */
 import request from './request'
 const getJobList = (page, data) => {
@@ -51,4 +51,27 @@ const dataIn = data => {
   return request('post', 'setData', data)
 }
 
-export { getJobList, collect, cancelCollect, getMyCollect, dataIn }
+const getDetailById = (uid, gameId) => {
+  return request(
+    'get',
+    'game/:id',
+    {},
+    {
+      query: {
+        uid: uid
+      },
+      params: {
+        id: gameId
+      }
+    }
+  )
+}
+
+export {
+  getJobList,
+  collect,
+  cancelCollect,
+  getMyCollect,
+  dataIn,
+  getDetailById
+}
